@@ -1,0 +1,33 @@
+package soft.net.model;
+
+import soft.common.UUIDUtil;
+
+/**
+ * 链路ID
+ * 
+ * @author fanpei
+ *
+ */
+public abstract class AChanelID {
+	protected String chanelId = null;
+
+	/**
+	 * 获取链路id
+	 * 
+	 * @return
+	 */
+	public String getChanelId() {
+		if (null == chanelId)
+			chanelId = UUIDUtil.getUUIDStr();
+		return chanelId;
+	}
+
+	/**
+	 * 重设链路id
+	 * 
+	 * @param chanelId
+	 */
+	public void resetChanelId(String chanelId) {
+		this.chanelId = chanelId;
+	}
+}
