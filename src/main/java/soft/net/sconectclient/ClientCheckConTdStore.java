@@ -40,7 +40,7 @@ public class ClientCheckConTdStore {
 	 */
 	public void run(ClientCheckConTd tdThread) {
 		addChanel(tdThread.getChanel());
-		scheduledSercice.scheduleWithFixedDelay(tdThread, ConfigClient.CONNET_RETRY_INTERVAL,
+		scheduledSercice.scheduleWithFixedDelay(tdThread, ConfigClient.SENDDATA_TIMEOUT * 1000,
 				ConfigClient.CONNET_RETRY_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 

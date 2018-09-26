@@ -1,5 +1,6 @@
 package soft.net.model;
 
+import io.netty.channel.Channel;
 import soft.ifs.IBytesBuild;
 import soft.ifs.ISendData;
 
@@ -31,8 +32,8 @@ public class ClientChanel extends AChanelID implements ISendData {
 	 * 
 	 * @param source
 	 */
-	public void updateChanel(CusNetSource source) {
-		this.listener.setNetSource(source);
+	public void updateChanel(Channel ch) {
+		this.listener.updateChanel(ch);
 	}
 
 	public ClientChanel(NetEventListener listener) {

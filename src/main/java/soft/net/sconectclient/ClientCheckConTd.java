@@ -9,7 +9,6 @@ import soft.conf.ConfigClient;
 import soft.ifs.IWriteLog;
 import soft.log.LogWriter;
 import soft.net.model.ClientChanel;
-import soft.net.model.CusNetSource;
 
 /**
  * 重连检测线程
@@ -51,6 +50,7 @@ public class ClientCheckConTd implements Runnable {
 			return;
 		try {
 			if (!chanel.getListener().getNetSource().isConnected()) {
+				chanel.getListener().getNetSource().close();// 防止二次连接
 				reConnect();
 			} else if (System.currentTimeMillis() - lastHeatBeat > ConfigClient.HEARBEAT_INTERVAL) {
 				sendHeartBeat();
@@ -72,8 +72,7 @@ public class ClientCheckConTd implements Runnable {
 	/**
 	 * 断线重连
 	 * 
-	 * @param chanel
-	 *            客户端链路
+	 * @param chanel 客户端链路
 	 * @throws InterruptedException
 	 */
 	public void reConnect() throws InterruptedException {
@@ -84,7 +83,7 @@ public class ClientCheckConTd implements Runnable {
 			public void operationComplete(Future<? super Void> future) throws Exception {
 				if (future.isSuccess()) {
 
-					chanel.updateChanel(new CusNetSource(f.channel()));// 更新
+					chanel.updateChanel(f.channel());// 更新
 					log.info("与服务器{} :{} 重新连接建立成功...", ip, port);
 				} else {
 					log.info("与服务器{} :{}重新连接失败...", ip, port);

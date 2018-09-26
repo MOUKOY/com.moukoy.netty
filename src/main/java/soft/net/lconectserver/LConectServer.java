@@ -308,8 +308,7 @@ public class LConectServer extends NetBase implements ISvrNet {
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 			try {
-				String err = cause.getMessage();
-				log.warn("server network exception {} {}", ctx.channel().remoteAddress().toString(), err);
+				log.warn("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
 				closeConnect(ctx);
 			} catch (Exception e) {
 			}

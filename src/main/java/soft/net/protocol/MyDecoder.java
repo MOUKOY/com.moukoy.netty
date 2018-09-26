@@ -31,13 +31,11 @@ public class MyDecoder implements IDecoder {
 		return resluts.poll();
 	}
 
-	boolean error = false;
-
 	@Override
 	public void deCode(IByteBuff in) {
+		try {
+			while (in.hasData()) {
 
-		while (in.hasData()) {
-			try {
 				if (!protocol.headerReadEnough())
 					protocol.readHeader(in);
 
@@ -53,23 +51,20 @@ public class MyDecoder implements IDecoder {
 
 						if (protocol.enderReadEnough()) {// 尾部读取完
 							protocol.validate();
+							protocol.parse();
 							IProtocol newprotocol = protocol.copyProtocol();
 							resluts.add(newprotocol);
 							protocol.clear();
 						}
 					}
 				}
-				error = false;
-			} catch (Exception e) {
-				protocol.clear();
-				if (!error) {
-					error = true;
-					log.error("解析数据报文错误", e);
-				}
-
 			}
+		} catch (Exception e) {
+			protocol.clear();
+			log.error("解析数据报文错误", e);
+		} finally {
+			in.release();// 释放资源
 		}
-		in.release();// 释放资源
 
 	}
 

@@ -1,6 +1,7 @@
 package soft.net.protocol;
 
 import soft.ifs.IByteBuff;
+import soft.ifs.IParse;
 import soft.net.exception.DecodeDataFailException;
 
 /**
@@ -9,7 +10,7 @@ import soft.net.exception.DecodeDataFailException;
  * @author fanpei
  *
  */
-public interface IProtocol {
+public interface IProtocol extends IParse {
 
 	/**
 	 * 起始头
@@ -76,11 +77,6 @@ public interface IProtocol {
 	 * 
 	 */
 	void parseHeaders();
-
-	/**
-	 * 清除数据
-	 */
-	void clear();
 
 	/**
 	 * 克隆副本

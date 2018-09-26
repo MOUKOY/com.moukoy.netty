@@ -28,8 +28,8 @@ public abstract class NetEventListener implements EventListener {
 		return channel;
 	}
 
-	public void setNetSource(CusNetSource ch) {
-		this.channel = ch;
+	public void updateChanel(Channel ch) {
+		this.channel.setNettyChanel(ch);
 	}
 
 	public void release() {
