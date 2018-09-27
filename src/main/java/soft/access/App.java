@@ -7,7 +7,7 @@ import soft.conf.ConfReader;
 import soft.log.LogAssist;
 
 /**
- * Hello world!
+ * 网络框架启动入口
  *
  */
 public class App {
