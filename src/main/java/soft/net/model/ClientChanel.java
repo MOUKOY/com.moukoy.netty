@@ -1,8 +1,8 @@
 package soft.net.model;
 
 import io.netty.channel.Channel;
-import soft.ifs.IBytesBuild;
-import soft.ifs.ISendData;
+import soft.net.ifs.IBytesBuild;
+import soft.net.ifs.ISendData;
 
 /**
  * 客户端长连接链路

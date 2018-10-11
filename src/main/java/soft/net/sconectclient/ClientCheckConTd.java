@@ -5,9 +5,9 @@ import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import soft.common.StringUtil;
-import soft.conf.ConfigClient;
-import soft.ifs.IWriteLog;
-import soft.log.LogWriter;
+import soft.common.log.IWriteLog;
+import soft.common.log.LogWriter;
+import soft.net.conf.ConfigClient;
 import soft.net.model.ClientChanel;
 
 /**

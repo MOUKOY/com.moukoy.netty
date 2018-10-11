@@ -57,6 +57,12 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- my custom jar -->
+		<dependency>
+			<groupId>moukoy</groupId>
+			<artifactId>sdkcommon</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 	<!-- 防止update更新时 工程编译环境发生改变 -->

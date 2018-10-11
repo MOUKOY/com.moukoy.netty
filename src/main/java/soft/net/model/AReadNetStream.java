@@ -1,6 +1,6 @@
 package soft.net.model;
 
-import soft.ifs.IByteBuff;
+import soft.net.ifs.IByteBuff;
 
 /**
  * 读取网络流

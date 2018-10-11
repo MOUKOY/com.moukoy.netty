@@ -2,7 +2,7 @@ package soft.net.model;
 
 import soft.common.BConvrtUtil;
 import soft.common.StringUtil;
-import soft.ifs.IByteBuff;
+import soft.net.ifs.IByteBuff;
 
 /**
  * 自定义具有指针移动的数据byte对象

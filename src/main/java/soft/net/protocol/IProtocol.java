@@ -1,8 +1,8 @@
 package soft.net.protocol;
 
-import soft.ifs.IByteBuff;
-import soft.ifs.IParse;
 import soft.net.exception.DecodeDataFailException;
+import soft.net.ifs.IByteBuff;
+import soft.net.ifs.IParse;
 
 /**
  * 协议接口

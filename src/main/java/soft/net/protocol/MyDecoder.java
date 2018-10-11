@@ -3,10 +3,10 @@ package soft.net.protocol;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import soft.ifs.IByteBuff;
-import soft.ifs.IDecoder;
-import soft.ifs.IWriteLog;
-import soft.log.LogWriter;
+import soft.common.log.IWriteLog;
+import soft.common.log.LogWriter;
+import soft.net.ifs.IByteBuff;
+import soft.net.ifs.IDecoder;
 import soft.net.model.NetEventListener;
 
 /**

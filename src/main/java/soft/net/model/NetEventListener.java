@@ -3,8 +3,8 @@ package soft.net.model;
 import java.util.EventListener;
 
 import io.netty.channel.Channel;
-import soft.ifs.IByteBuff;
-import soft.ifs.IDecoder;
+import soft.net.ifs.IByteBuff;
+import soft.net.ifs.IDecoder;
 import soft.net.protocol.IProtocol;
 import soft.net.protocol.MyDecoder;
 

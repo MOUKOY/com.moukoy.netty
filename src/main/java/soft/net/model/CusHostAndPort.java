@@ -1,6 +1,6 @@
 package soft.net.model;
 
-import soft.model.enm.HostType;
+import soft.common.model.enm.HostType;
 
 /**
  *

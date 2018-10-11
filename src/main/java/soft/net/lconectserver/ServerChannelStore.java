@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import soft.ifs.INetChanel;
+import soft.net.ifs.INetChanel;
 
 /**
  * 服务端网络连接仓库

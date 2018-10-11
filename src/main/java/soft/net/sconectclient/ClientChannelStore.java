@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import soft.ifs.INetChanel;
+import soft.net.ifs.INetChanel;
 import soft.net.model.CusNetSource;
 
 /**

@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
 import soft.common.StringUtil;
-import soft.ifs.IByteBuff;
+import soft.net.ifs.IByteBuff;
 
 public class NetByteBuff implements IByteBuff {
 

@@ -3,9 +3,9 @@ package soft.net.model;
 import java.net.InetSocketAddress;
 
 import io.netty.channel.Channel;
-import soft.ifs.IBytesBuild;
-import soft.ifs.INetChanel;
 import soft.net.SendDataUtil;
+import soft.net.ifs.IBytesBuild;
+import soft.net.ifs.INetChanel;
 
 /**
  * 自定义网络源

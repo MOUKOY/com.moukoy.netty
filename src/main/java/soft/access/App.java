@@ -3,8 +3,7 @@ package soft.access;
 import java.io.File;
 
 import soft.common.StringUtil;
-import soft.conf.ConfReader;
-import soft.log.LogAssist;
+import soft.net.conf.ConfReader;
 
 /**
  * 网络框架启动入口
@@ -42,9 +41,8 @@ public class App {
 			System.setProperty("softRun.path", RunPath);
 		}
 
-		// log
-		LogAssist.init(RunPath);
-		StringUtil.init();
+		// sdk
+		moukoy.sdkcommon.App.init(RunPath);
 
 		//
 		ConfReader.init(RunPath);
