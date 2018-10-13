@@ -151,7 +151,7 @@ public class LConectServer extends NetBase implements ISvrNet {
 				log.debug("server started and listen on " + ip_port);
 				f.channel().closeFuture().sync();
 			} catch (Exception e) {
-				log.info("server will close the: " + ip_port);
+				log.info("server will close the: " + ip_port,e);
 			} finally {
 				latch.countDown();
 			}
