@@ -1,6 +1,8 @@
 package soft.net.conf;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import soft.common.conf.ConfException;
 import soft.common.file.PathUtil;
@@ -18,6 +20,10 @@ public class ConfReader {
 	 */
 	public static void init(String runDir) throws IOException, ConfException {
 		confPath = PathUtil.combinePath(runDir, CONF);
+		File confile = new File(confPath);
+		if (!confile.exists()) {// 不存在使用默认配置
+			confPath = URLDecoder.decode(ConfReader.class.getClassLoader().getResource(CONF).getPath(), "utf-8");
+		}
 
 	}
 
