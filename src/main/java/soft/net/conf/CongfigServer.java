@@ -19,8 +19,18 @@ import soft.net.model.CusHostAndPort;
  */
 public class CongfigServer extends Conf {
 
+	/**
+	 * 监听列表
+	 */
 	public static List<CusHostAndPort> HOSTS;
-	public static int MAXCLIENTS = Integer.MAX_VALUE;// 最大客户端连接
+	/**
+	 * 最大客户端连接
+	 */
+	public static int MAXCLIENTS = Integer.MAX_VALUE;
+	/**
+	 * 最大未收到数据断开连接间隔 （单位：秒）
+	 */
+	public static int CHANLEDATARECVINTERVAL = 300;
 
 	public static void init() throws ConfException, IOException {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);
@@ -35,6 +45,12 @@ public class CongfigServer extends Conf {
 			case "maxClients":
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
 					MAXCLIENTS = Integer.parseInt(v.getValue());
+				}
+				break;
+
+			case "dataRecvInterval":
+				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
+					CHANLEDATARECVINTERVAL = Integer.parseInt(v.getValue());
 				}
 				break;
 			default:

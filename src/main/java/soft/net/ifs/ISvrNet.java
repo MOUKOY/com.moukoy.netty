@@ -1,5 +1,7 @@
 package soft.net.ifs;
 
+import java.util.Collection;
+
 /**
  * 网络传输接口 server
  * 
@@ -23,17 +25,6 @@ public interface ISvrNet {
 	void close() /* throws CusException */;
 
 	/**
-	 * 向指定客户端发送数据
-	 * 
-	 * @param chanelId 链路标识
-	 * @param data     数据内容
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	boolean sendDataToClient(INetChanel chanel, IBytesBuild data) throws Exception;
-
-	/**
 	 * 向当前已连接所有客户端广播数据
 	 * 
 	 * @param data 广播数据内容
@@ -45,16 +36,32 @@ public interface ISvrNet {
 	 * 向指定端口上广播数据
 	 * 
 	 * @param localPort
-	 * @param data
+	 * @param data      广播数据内容
 	 * @throws Exception
 	 */
 	void sendDataToAllClient(int localPort, IBytesBuild data) throws Exception;
 
 	/**
+	 * 定向发送数据
+	 * 
+	 * @param channels 指定的连接集合
+	 * @param data    数据内容
+	 * @throws Exception
+	 */
+	void sendDataToAllClient(Collection<INetChanel> channels, IBytesBuild data) throws Exception;
+
+	/**
 	 * 获取本地指定端口上所有连接的个数
 	 * 
-	 * @param localPort
+	 * @param localPort 指定端口
 	 * @return
 	 */
 	int getAllConnectNum(int localPort);
+
+	/**
+	 * 获取本地所有连接的个数
+	 * 
+	 * @return
+	 */
+	int getAllConnectNum();
 }

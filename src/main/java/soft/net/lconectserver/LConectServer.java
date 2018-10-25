@@ -19,6 +19,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.ResourceLeakDetector.Level;
@@ -49,9 +50,9 @@ import soft.net.model.NetEventListener;
 public class LConectServer extends NetBase implements ISvrNet {
 	private static final IWriteLog log = new LogWriter(LConectServer.class);
 	private static IListenerCreator creator = null;
-	ServerBootstrap bootstrap;
-	EventLoopGroup workergroup;
-	EventLoopGroup bossGroup;
+	private ServerBootstrap bootstrap;
+	private EventLoopGroup workergroup;
+	private EventLoopGroup bossGroup;
 
 	private ServerConMap store = null;// 连接仓库
 	private CountDownLatch latch = null;
@@ -106,57 +107,11 @@ public class LConectServer extends NetBase implements ISvrNet {
 				}
 				NetEventListener listener = creator.getListener(ch);
 				LConectServerHandler shEchoServerHandler = new LConectServerHandler(listener);
-				// shEchoServerHandler.intListener(creator);
-				// shEchoServerHandler.setChMap(chMap);
-				// customdecoder.setQueueopt(netDataOpt);
-				// ch.pipeline().addLast("myDecoder",
-				// new CustomDecoder(ORDER, MAX_FRAME_LENGTH,
-				// LENGTH_FIELD_OFFSET, LENGTH_FIELD_LENGTH,
-				// LENGTH_ADJUSTMENT, INITIAL_BYTES_TO_STRIP, true));
-				ch.pipeline().addLast("myHandler", shEchoServerHandler);
+				ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
+				ch.pipeline().addLast("MyServerHandler", shEchoServerHandler);
 
 			}
 		});
-	}
-
-	/**
-	 * 端口实例
-	 * 
-	 * @author fanpei
-	 *
-	 */
-	class PortInstance implements Runnable {
-
-		private CountDownLatch latch;
-		private String ip;
-		private int port;
-		private ChannelFuture f;
-
-		public PortInstance(CountDownLatch latch, String ip, int port) {
-			this.latch = latch;
-			this.ip = ip;
-			this.port = port;
-		}
-
-		@Override
-		public void run() {
-			String ip_port = null;
-			try {
-				ip_port = String.format("%s:%d", ip, port);
-				Thread td = Thread.currentThread();
-				td.setName(String.format("网络监听 [%s]", ip_port));
-
-				log.debug("server Attemping to listenning on " + ip_port);
-				f = bootstrap.bind(ip, port).sync();// 配置完成，开始绑定server，通过调用sync同步方法阻塞直到绑定成功
-				log.debug("server started and listen on " + ip_port);
-				f.channel().closeFuture().sync();
-			} catch (Exception e) {
-				log.info("server will close the: " + ip_port,e);
-			} finally {
-				latch.countDown();
-			}
-
-		}
 	}
 
 	@Override
@@ -198,11 +153,6 @@ public class LConectServer extends NetBase implements ISvrNet {
 	}
 
 	@Override
-	public boolean sendDataToClient(INetChanel chanel, IBytesBuild data) throws Exception {
-		return chanel.sendData(data);
-	}
-
-	@Override
 	public void sendDataToAllClient(IBytesBuild data) throws Exception {
 		validate(data);
 		Collection<INetChanel> channels = store.getAllChanels();
@@ -225,17 +175,27 @@ public class LConectServer extends NetBase implements ISvrNet {
 	}
 
 	@Override
-	public int getAllConnectNum(int localPort) {
-		int coneNum = 0;
-		Collection<INetChanel> connects = store.getAllChanels(localPort);
-		if (connects != null && !connects.isEmpty()) {
-			coneNum = connects.size();
+	public void sendDataToAllClient(Collection<INetChanel> channels, IBytesBuild data) throws Exception {
+		validate(data);
+		if (channels != null && !channels.isEmpty()) {
+			for (INetChanel ch : channels) {
+				ch.sendData(data);
+			}
 		}
-		return coneNum;
+	}
+
+	@Override
+	public int getAllConnectNum(int localPort) {
+		return store.getConnectNum(localPort);
+	}
+
+	@Override
+	public int getAllConnectNum() {
+		return store.getAllConectNum();
 	}
 
 	private static void validate(IBytesBuild data) throws Exception {
-		if (data == null || data.buildBytes() == null) {
+		if (data == null) {
 			throw new Exception("待发送数据为空，请检查数据完整性");
 		}
 	}
@@ -334,4 +294,45 @@ public class LConectServer extends NetBase implements ISvrNet {
 			}
 		}
 	}
+
+	/**
+	 * 端口实例
+	 * 
+	 * @author fanpei
+	 *
+	 */
+	class PortInstance implements Runnable {
+
+		private CountDownLatch latch;
+		private String ip;
+		private int port;
+		private ChannelFuture f;
+
+		public PortInstance(CountDownLatch latch, String ip, int port) {
+			this.latch = latch;
+			this.ip = ip;
+			this.port = port;
+		}
+
+		@Override
+		public void run() {
+			String ip_port = null;
+			try {
+				ip_port = String.format("%s:%d", ip, port);
+				Thread td = Thread.currentThread();
+				td.setName(String.format("网络监听 [%s]", ip_port));
+
+				log.debug("server Attemping to listenning on " + ip_port);
+				f = bootstrap.bind(ip, port).sync();// 配置完成，开始绑定server，通过调用sync同步方法阻塞直到绑定成功
+				log.debug("server started and listen on " + ip_port);
+				f.channel().closeFuture().sync();
+			} catch (Exception e) {
+				log.info("server will close the: " + ip_port, e);
+			} finally {
+				latch.countDown();
+			}
+
+		}
+	}
+
 }
