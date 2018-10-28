@@ -66,8 +66,10 @@ public class LConectServer extends NetBase implements ISvrNet {
 	/**
 	 * 网络服务端
 	 * 
-	 * @param ip   监听地址
-	 * @param port 监听端口
+	 * @param ip
+	 *            监听地址
+	 * @param port
+	 *            监听端口
 	 */
 
 	public LConectServer() {
@@ -322,9 +324,9 @@ public class LConectServer extends NetBase implements ISvrNet {
 				Thread td = Thread.currentThread();
 				td.setName(String.format("网络监听 [%s]", ip_port));
 
-				log.debug("server Attemping to listenning on " + ip_port);
+				log.info("server Attemping to listenning on " + ip_port);
 				f = bootstrap.bind(ip, port).sync();// 配置完成，开始绑定server，通过调用sync同步方法阻塞直到绑定成功
-				log.debug("server started and listen on " + ip_port);
+				log.info("server started and listen on " + ip_port);
 				f.channel().closeFuture().sync();
 			} catch (Exception e) {
 				log.info("server will close the: " + ip_port, e);
