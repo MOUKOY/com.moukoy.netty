@@ -2,6 +2,7 @@ package soft.net.protocol;
 
 import soft.net.exception.DecodeDataFailException;
 import soft.net.ifs.IByteBuff;
+import soft.net.ifs.IBytesBuild;
 import soft.net.ifs.IParse;
 
 /**
@@ -10,7 +11,7 @@ import soft.net.ifs.IParse;
  * @author fanpei
  *
  */
-public interface IProtocol extends IParse {
+public interface IProtocol extends IParse, IBytesBuild {
 
 	/**
 	 * 起始头
@@ -84,11 +85,4 @@ public interface IProtocol extends IParse {
 	 * @return
 	 */
 	IProtocol copyProtocol();
-
-	/**
-	 * 组装发送二进制协议
-	 * 
-	 * @return
-	 */
-	byte[] buildSendBytes();
 }
