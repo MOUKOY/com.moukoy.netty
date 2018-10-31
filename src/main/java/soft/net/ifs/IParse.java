@@ -6,7 +6,7 @@ package soft.net.ifs;
  * @author fanpei
  *
  */
-public interface IParse {
+public interface IParse extends IValidate {
 
 	/**
 	 * 解析数据
