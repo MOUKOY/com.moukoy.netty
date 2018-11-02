@@ -22,7 +22,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ResourceLeakDetector;
-import io.netty.util.ResourceLeakDetector.Level;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import soft.common.conf.ConfException;
 import soft.common.log.IWriteLog;
@@ -73,7 +72,11 @@ public class LConectServer extends NetBase implements ISvrNet {
 	 */
 
 	public LConectServer() {
-		ResourceLeakDetector.setLevel(Level.ADVANCED);
+		System.setProperty("io.netty.leakDetection.maxRecords", "100");
+		System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
+		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
+		// ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);//
+		// 应用级别
 		hosts = CongfigServer.HOSTS;
 		store = new ServerConMap(hosts);
 		int processorsNumber = Runtime.getRuntime().availableProcessors();
