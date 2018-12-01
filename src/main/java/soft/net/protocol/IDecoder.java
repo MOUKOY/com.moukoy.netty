@@ -1,6 +1,6 @@
-package soft.net.ifs;
+package soft.net.protocol;
 
-import soft.net.protocol.IProtocol;
+import soft.net.ifs.IByteBuff;
 
 /**
  * netty解码器

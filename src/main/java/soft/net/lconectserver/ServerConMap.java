@@ -3,12 +3,13 @@ package soft.net.lconectserver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import soft.common.exception.DataIsNullException;
+import soft.net.conf.CongfigServer;
+import soft.net.conf.IPAddrPackage;
 import soft.net.exception.NoCurrentPortConnectException;
 import soft.net.ifs.INetChanel;
-import soft.net.model.CusHostAndPort;
 
 /**
  * 服务端连接映射总表
@@ -23,10 +24,13 @@ class ServerConMap {
 	 */
 	private final Map<String, ServerChannelStore> chanelsMap;
 
-	public ServerConMap(List<CusHostAndPort> hosts) {
-		chanelsMap = new HashMap<>(hosts.size());
-		for (CusHostAndPort cusHostAndPort : hosts) {
-			ServerChannelStore ccs = new ServerChannelStore(cusHostAndPort.getPort());
+	public ServerConMap() throws DataIsNullException {
+		if (CongfigServer.HOSTS == null || CongfigServer.HOSTS.size() == 0)
+			throw new DataIsNullException("server conf hosts is null");
+
+		chanelsMap = new HashMap<>(CongfigServer.HOSTS.size());
+		for (IPAddrPackage ipp : CongfigServer.HOSTS) {
+			ServerChannelStore ccs = new ServerChannelStore(ipp.getHost().getPort());
 			chanelsMap.put(ccs.getStoreId(), ccs);
 		}
 	}

@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import soft.common.PropertiesUtil;
 import soft.common.StringUtil;
 import soft.common.conf.ConfException;
-import soft.net.model.CusHostAndPort;
 
 /**
  * 客户端配置文件
@@ -43,9 +42,9 @@ public class ConfigClient extends Conf {
 	 */
 	public static final int SHORTCONECT_REVDATA_WAITTIMEOUT = 60 * 1000;
 
-	private static List<CusHostAndPort> hosts;
+	private static List<IPAddrPackage> hosts;
 
-	public static List<CusHostAndPort> getHosts() {
+	public static List<IPAddrPackage> getHosts() {
 		return hosts;
 	}
 

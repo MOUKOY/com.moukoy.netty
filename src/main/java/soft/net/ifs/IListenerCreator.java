@@ -1,6 +1,6 @@
 package soft.net.ifs;
 
-import io.netty.channel.Channel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import soft.net.model.NetEventListener;
 
 /**
@@ -15,6 +15,6 @@ public interface IListenerCreator {
 	 * 
 	 * @return
 	 */
-	NetEventListener getListener(Channel ch);
+	NetEventListener getListener(NioSocketChannel ch);
 
 }

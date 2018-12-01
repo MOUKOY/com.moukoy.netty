@@ -10,7 +10,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -24,10 +23,9 @@ import soft.net.ifs.IBytesBuild;
 import soft.net.ifs.IClientNet;
 import soft.net.ifs.IListenerCreator;
 import soft.net.model.ClientChanel;
-import soft.net.model.NetBase;
 import soft.net.model.NetEventListener;
 
-public class SConectClient extends NetBase implements IClientNet {
+public class SConectClient implements IClientNet {
 
 	private static final IWriteLog log = new LogWriter(SConectClient.class);
 
@@ -128,10 +126,10 @@ public class SConectClient extends NetBase implements IClientNet {
 	 * @author fanpei
 	 *
 	 */
-	private class MyClientInittializer extends ChannelInitializer<SocketChannel> {
+	private class MyClientInittializer extends ChannelInitializer<NioSocketChannel> {
 
 		@Override
-		protected void initChannel(SocketChannel ch) throws Exception {
+		protected void initChannel(NioSocketChannel ch) throws Exception {
 
 			ChannelPipeline pipeline = ch.pipeline();
 			NetEventListener listener = creator.getListener(ch);

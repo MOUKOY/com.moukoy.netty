@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import soft.common.log.IWriteLog;
 import soft.common.log.LogWriter;
 import soft.net.ifs.IByteBuff;
-import soft.net.ifs.IDecoder;
 import soft.net.model.NetEventListener;
 
 /**

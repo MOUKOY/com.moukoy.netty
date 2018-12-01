@@ -3,8 +3,9 @@ package soft.net.model;
 import java.util.EventListener;
 
 import io.netty.channel.Channel;
+import io.netty.channel.socket.SocketChannel;
 import soft.net.ifs.IByteBuff;
-import soft.net.ifs.IDecoder;
+import soft.net.protocol.IDecoder;
 import soft.net.protocol.IProtocol;
 import soft.net.protocol.MyDecoder;
 
@@ -18,7 +19,7 @@ public abstract class NetEventListener implements EventListener {
 	protected IDecoder decoder;
 	protected CusNetSource channel;// 连接链路
 
-	public NetEventListener(Channel ch) {
+	public NetEventListener(SocketChannel ch) {
 		super();
 		this.channel = new CusNetSource(ch);
 		this.decoder = new MyDecoder(this);

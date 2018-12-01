@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import soft.common.PropertiesUtil;
 import soft.common.StringUtil;
 import soft.common.conf.ConfException;
-import soft.net.model.CusHostAndPort;
 
 /**
  * 服务端配置
@@ -22,7 +21,7 @@ public class CongfigServer extends Conf {
 	/**
 	 * 监听列表
 	 */
-	public static List<CusHostAndPort> HOSTS;
+	public static List<IPAddrPackage> HOSTS;
 	/**
 	 * 最大客户端连接
 	 */

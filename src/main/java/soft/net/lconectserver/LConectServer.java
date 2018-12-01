@@ -3,6 +3,7 @@ package soft.net.lconectserver;
 import java.io.IOException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
@@ -17,28 +18,31 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import soft.common.ClassUtil;
+import soft.common.InstanceUitl;
 import soft.common.conf.ConfException;
+import soft.common.exception.DataIsNullException;
+import soft.common.exception.LoadReflectException;
 import soft.common.log.IWriteLog;
 import soft.common.log.LogWriter;
 import soft.common.tdPool.TdFixedPoolExcCenter;
 import soft.net.conf.CongfigServer;
+import soft.net.conf.IPAddrPackage;
 import soft.net.exception.ConectClientsFullException;
 import soft.net.exception.NoCurrentPortConnectException;
 import soft.net.ifs.IByteBuff;
 import soft.net.ifs.IBytesBuild;
-import soft.net.ifs.IListenerCreator;
 import soft.net.ifs.INetChanel;
 import soft.net.ifs.ISvrNet;
-import soft.net.model.CusHostAndPort;
-import soft.net.model.NetBase;
 import soft.net.model.NetByteBuff;
 import soft.net.model.NetEventListener;
+import soft.net.protocol.IPListener;
 
 /**
  * 网络服务端类
@@ -46,9 +50,11 @@ import soft.net.model.NetEventListener;
  * @author fanpei
  *
  */
-public class LConectServer extends NetBase implements ISvrNet {
+public class LConectServer implements ISvrNet {
 	private static final IWriteLog log = new LogWriter(LConectServer.class);
-	private static IListenerCreator creator = null;
+	private ListenerStore listers = null;
+
+	// private IListenerCreator creator = null;
 	private ServerBootstrap bootstrap;
 	private EventLoopGroup workergroup;
 	private EventLoopGroup bossGroup;
@@ -57,38 +63,37 @@ public class LConectServer extends NetBase implements ISvrNet {
 	private CountDownLatch latch = null;
 	private TdFixedPoolExcCenter threadSver = null;
 
-	public static void init(IListenerCreator creator) throws ConfException, IOException {
-		LConectServer.creator = creator;
-		CongfigServer.init();
-	}
-
 	/**
 	 * 网络服务端
 	 * 
-	 * @param ip
-	 *            监听地址
-	 * @param port
-	 *            监听端口
+	 * @throws ConfException
+	 * @throws IOException
+	 * @throws LoadReflectException
+	 * @throws DataIsNullException
 	 */
+	public LConectServer()
+			throws ConfException, IOException, LoadReflectException, DataIsNullException {
 
-	public LConectServer() {
+		CongfigServer.init();
+		initListeners();
+		this.store = new ServerConMap();
+
 		System.setProperty("io.netty.leakDetection.maxRecords", "100");
 		System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
 		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
 		// ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);//
 		// 应用级别
-		hosts = CongfigServer.HOSTS;
-		store = new ServerConMap(hosts);
+
 		int processorsNumber = Runtime.getRuntime().availableProcessors();
-		bootstrap = new ServerBootstrap();// 引导辅助程序
-		bossGroup = new NioEventLoopGroup(1);
+		this.bootstrap = new ServerBootstrap();// 引导辅助程序
+		this.bossGroup = new NioEventLoopGroup(1);
 		ThreadFactory boosstf = new DefaultThreadFactory("Netty-Worker");
-		workergroup = new NioEventLoopGroup(processorsNumber, boosstf, SelectorProvider.provider());
-		bootstrap.group(bossGroup, workergroup);
+		this.workergroup = new NioEventLoopGroup(processorsNumber, boosstf, SelectorProvider.provider());
+		this.bootstrap.group(bossGroup, workergroup);
 
 		// 设置nio类型的channel
-		bootstrap.channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 2048);
-		bootstrap.option(ChannelOption.SO_RCVBUF, 1024 * 32).option(ChannelOption.SO_SNDBUF, 1024 * 32)
+		this.bootstrap.channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 2048);
+		this.bootstrap.option(ChannelOption.SO_RCVBUF, 1024 * 32).option(ChannelOption.SO_SNDBUF, 1024 * 32)
 				.option(ChannelOption.TCP_NODELAY, false).option(ChannelOption.ALLOW_HALF_CLOSURE, true)// 半关闭
 				// 设置立即发送;
 
@@ -103,14 +108,16 @@ public class LConectServer extends NetBase implements ISvrNet {
 				.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
 				.childOption(ChannelOption.TCP_NODELAY, false);
 
-		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {// 有连接到达时会创建一个channel
+		this.bootstrap.childHandler(new ChannelInitializer<NioSocketChannel>() {// 有连接到达时会创建一个channel
 			@Override
-			protected void initChannel(SocketChannel ch) throws Exception {
+			protected void initChannel(NioSocketChannel ch) throws Exception {
 				if (closed) {// 关闭不接受新的连接
 					ch.close();
 					return;
 				}
-				NetEventListener listener = creator.getListener(ch);
+				Class<NetEventListener> clazz = listers
+						.getListenerClass(ch.localAddress().toString().replaceAll("/", ""));
+				NetEventListener listener = InstanceUitl.createObject("NetEventListener", clazz, ch);
 				LConectServerHandler shEchoServerHandler = new LConectServerHandler(listener);
 				ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
 				ch.pipeline().addLast("MyServerHandler", shEchoServerHandler);
@@ -119,13 +126,36 @@ public class LConectServer extends NetBase implements ISvrNet {
 		});
 	}
 
+	private void initListeners() throws LoadReflectException {
+		listers = new ListenerStore();
+		for (IPAddrPackage ipAddrPackage : CongfigServer.HOSTS) {
+			Set<Class<?>> clazzs = ClassUtil.getClasses(ipAddrPackage.getListenerClass(), IPListener.class);
+			if (clazzs != null && clazzs.size() > 0) {
+				try {
+					Class<?> cls = clazzs.iterator().next();
+					if (cls.getSuperclass().equals(NetEventListener.class)) {
+
+						@SuppressWarnings("unchecked")
+						Class<NetEventListener> lis = (Class<NetEventListener>) cls;
+						listers.add(ipAddrPackage.getHost().getAddrStr(), lis);
+					}
+				} catch (Exception e) {
+					throw new LoadReflectException("load listener err:" + ipAddrPackage.getListenerClass()
+							+ "please check if this class  contain default constructor?");
+				}
+			} else
+				throw new LoadReflectException("not found listener,please check conf listnerLoc!");
+		}
+
+	}
+
 	@Override
 	public void start() throws Exception {
 		try {
-			latch = new CountDownLatch(hosts.size());
-			threadSver = new TdFixedPoolExcCenter(hosts.size());
-			for (CusHostAndPort ip_port : hosts) {
-				PortInstance pi = new PortInstance(latch, ip_port.getIP(), ip_port.getPort());
+			latch = new CountDownLatch(CongfigServer.HOSTS.size());
+			threadSver = new TdFixedPoolExcCenter(CongfigServer.HOSTS.size());
+			for (IPAddrPackage ip_port : CongfigServer.HOSTS) {
+				PortInstance pi = new PortInstance(latch, ip_port.getHost().getIP(), ip_port.getHost().getPort());
 				threadSver.execute(pi);
 			}
 
