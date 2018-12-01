@@ -14,15 +14,6 @@ import soft.net.ifs.IParse;
 public interface IProtocol extends IParse, IBytesBuild {
 
 	/**
-	 * 起始头
-	 */
-	byte STARTFLAG = (byte) 0xFF;
-	/**
-	 * 结束头
-	 */
-	byte ENDFLAG = (byte) 0xFF;
-
-	/**
 	 * 校验数据
 	 * 
 	 * @throws CRC8CheckNotSame
