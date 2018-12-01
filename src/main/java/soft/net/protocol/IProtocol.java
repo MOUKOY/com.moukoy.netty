@@ -14,9 +14,22 @@ import soft.net.ifs.IParse;
 public interface IProtocol extends IParse, IBytesBuild {
 
 	/**
+	 * 获取数据
+	 * 
+	 * @return
+	 */
+	public byte[] getDatas();
+
+	/**
+	 * 获取子功能数据
+	 * 
+	 * @return
+	 */
+	public byte[] getChilddatas();
+
+	/**
 	 * 校验数据
 	 * 
-	 * @throws CRC8CheckNotSame
 	 * 
 	 * @throws Exception
 	 */
