@@ -3,7 +3,6 @@ package soft.net.lconectserver;
 import java.io.IOException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
@@ -71,8 +70,7 @@ public class LConectServer implements ISvrNet {
 	 * @throws LoadReflectException
 	 * @throws DataIsNullException
 	 */
-	public LConectServer()
-			throws ConfException, IOException, LoadReflectException, DataIsNullException {
+	public LConectServer() throws ConfException, IOException, LoadReflectException, DataIsNullException {
 
 		CongfigServer.init();
 		initListeners();
@@ -117,7 +115,7 @@ public class LConectServer implements ISvrNet {
 				}
 				Class<NetEventListener> clazz = listers
 						.getListenerClass(ch.localAddress().toString().replaceAll("/", ""));
-				NetEventListener listener = InstanceUitl.createObject("NetEventListener", clazz, ch);
+				NetEventListener listener = InstanceUitl.createObject(clazz, ch);
 				LConectServerHandler shEchoServerHandler = new LConectServerHandler(listener);
 				ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
 				ch.pipeline().addLast("MyServerHandler", shEchoServerHandler);
@@ -129,19 +127,17 @@ public class LConectServer implements ISvrNet {
 	private void initListeners() throws LoadReflectException {
 		listers = new ListenerStore();
 		for (IPAddrPackage ipAddrPackage : CongfigServer.HOSTS) {
-			Set<Class<?>> clazzs = ClassUtil.getClasses(ipAddrPackage.getListenerClass(), IPListener.class);
-			if (clazzs != null && clazzs.size() > 0) {
+			Class<?> clazz = ClassUtil.getSingleClass(ipAddrPackage.getListenerClass(), IPListener.class);
+			if (clazz != null) {
 				try {
-					Class<?> cls = clazzs.iterator().next();
-					if (cls.getSuperclass().equals(NetEventListener.class)) {
-
-						@SuppressWarnings("unchecked")
-						Class<NetEventListener> lis = (Class<NetEventListener>) cls;
-						listers.add(ipAddrPackage.getHost().getAddrStr(), lis);
-					}
+					@SuppressWarnings("unchecked")
+					Class<NetEventListener> lis = (Class<NetEventListener>) clazz;
+					NioSocketChannel ch = new NioSocketChannel();
+					InstanceUitl.createObject(lis, ch);
+					listers.add(ipAddrPackage.getHost().getAddrStr(), lis);
 				} catch (Exception e) {
 					throw new LoadReflectException("load listener err:" + ipAddrPackage.getListenerClass()
-							+ "please check if this class  contain default constructor?");
+							+ "please check if this class  contain constructor(NioSocketChannel ch)?");
 				}
 			} else
 				throw new LoadReflectException("not found listener,please check conf listnerLoc!");
