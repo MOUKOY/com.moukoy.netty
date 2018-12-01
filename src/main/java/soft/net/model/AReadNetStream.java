@@ -8,6 +8,7 @@ import soft.net.ifs.IByteBuff;
  * @author fanpei
  *
  */
+@Deprecated
 public abstract class AReadNetStream {
 	/**
 	 * 读取数据并返回已经读取数据大小
