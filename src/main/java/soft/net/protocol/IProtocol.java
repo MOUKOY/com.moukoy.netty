@@ -87,8 +87,9 @@ public interface IProtocol extends IParse, IBytesBuild {
 	 * 克隆副本
 	 * 
 	 * @return
+	 * @throws Exception
 	 */
-	IProtocol copyProtocol();
+	IProtocol copyProtocol() throws Exception;
 
 	/**
 	 * 读取数据并返回已经读取数据大小
