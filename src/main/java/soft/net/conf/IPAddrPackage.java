@@ -18,11 +18,11 @@ public class IPAddrPackage {
 
 	public IPAddrPackage(String hostListener) throws ConfException {
 		String[] ips = hostListener.split(":");
-		if (ips == null || ips.length != 3)
+		if (ips == null || ips.length < 2)
 			throw new ConfException(
 					StringUtil.getMsgStr("this key {} is  configure error,it's not correct fomat", hostListener));
 		this.host = new CusHostAndPort(ips[0], Integer.parseInt(ips[1]));
-		this.ListenerClass = ips[2];
-
+		if (ips.length == 3)
+			this.ListenerClass = ips[2];
 	}
 }
