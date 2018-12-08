@@ -9,7 +9,7 @@ import soft.net.conf.ConfReader;
  * 网络框架启动入口
  *
  */
-public class App {
+public class NettyFrame {
 	private static String RunPath;
 
 	/**
