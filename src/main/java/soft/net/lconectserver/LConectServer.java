@@ -25,11 +25,12 @@ import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import soft.common.ClassUtil;
 import soft.common.InstanceUitl;
+import soft.common.StringUtil;
 import soft.common.conf.ConfException;
 import soft.common.exception.DataIsNullException;
 import soft.common.exception.LoadReflectException;
 import soft.common.log.IWriteLog;
-import soft.common.log.LogWriter;
+import soft.common.log.Log4j2Writer;
 import soft.common.tdPool.TdFixedPoolExcCenter;
 import soft.net.conf.CongfigServer;
 import soft.net.conf.IPAddrPackage;
@@ -50,7 +51,7 @@ import soft.net.protocol.IPListener;
  *
  */
 public class LConectServer implements ISvrNet {
-	private static final IWriteLog log = new LogWriter(LConectServer.class);
+	private static final IWriteLog log = new Log4j2Writer(LConectServer.class);
 	private ListenerStore listers = null;
 
 	// private IListenerCreator creator = null;
@@ -127,6 +128,10 @@ public class LConectServer implements ISvrNet {
 	private void initListeners() throws LoadReflectException {
 		listers = new ListenerStore();
 		for (IPAddrPackage ipAddrPackage : CongfigServer.HOSTS) {
+			if (StringUtil.isStrNullOrWhiteSpace(ipAddrPackage.getListenerClass())) {
+				log.warn("init warn,this address:{} does't has netlistener", ipAddrPackage.getHost().getAddrStr());
+				continue;
+			}
 			Class<?> clazz = ClassUtil.getSingleClass(ipAddrPackage.getListenerClass(), IPListener.class);
 			if (clazz != null) {
 				try {

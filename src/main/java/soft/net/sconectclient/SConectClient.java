@@ -16,7 +16,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import soft.common.conf.ConfException;
 import soft.common.exception.DataIsNullException;
 import soft.common.log.IWriteLog;
-import soft.common.log.LogWriter;
+import soft.common.log.Log4j2Writer;
 import soft.net.conf.ConfigClient;
 import soft.net.exception.ConectSeverException;
 import soft.net.ifs.IBytesBuild;
@@ -27,7 +27,7 @@ import soft.net.model.NetEventListener;
 
 public class SConectClient implements IClientNet {
 
-	private static final IWriteLog log = new LogWriter(SConectClient.class);
+	private static final IWriteLog log = new Log4j2Writer(SConectClient.class);
 
 	private static IListenerCreator creator = null;
 	/**

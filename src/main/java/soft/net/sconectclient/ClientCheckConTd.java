@@ -6,7 +6,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import soft.common.StringUtil;
 import soft.common.log.IWriteLog;
-import soft.common.log.LogWriter;
+import soft.common.log.Log4j2Writer;
 import soft.net.conf.ConfigClient;
 import soft.net.model.ClientChanel;
 
@@ -18,7 +18,7 @@ import soft.net.model.ClientChanel;
  *
  */
 public class ClientCheckConTd implements Runnable {
-	private static final IWriteLog log = new LogWriter(ClientCheckConTd.class);
+	private static final IWriteLog log = new Log4j2Writer(ClientCheckConTd.class);
 
 	private ClientChanel chanel;// 客户端信息
 	private Bootstrap bstrap;

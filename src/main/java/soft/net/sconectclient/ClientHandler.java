@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import soft.common.log.IWriteLog;
-import soft.common.log.LogWriter;
+import soft.common.log.Log4j2Writer;
 import soft.net.ifs.IByteBuff;
 import soft.net.model.CusNetSource;
 import soft.net.model.NetByteBuff;
@@ -18,7 +18,7 @@ import soft.net.model.NetEventListener;
  *
  */
 public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
-	private static final IWriteLog log = new LogWriter(ClientHandler.class);
+	private static final IWriteLog log = new Log4j2Writer(ClientHandler.class);
 
 	private ClientChannelStore store;
 	private NetEventListener listener;

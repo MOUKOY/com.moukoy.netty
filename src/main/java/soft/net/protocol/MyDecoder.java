@@ -4,7 +4,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import soft.common.log.IWriteLog;
-import soft.common.log.LogWriter;
+import soft.common.log.Log4j2Writer;
 import soft.net.ifs.IByteBuff;
 import soft.net.model.NetEventListener;
 
@@ -15,7 +15,7 @@ import soft.net.model.NetEventListener;
  *
  */
 public class MyDecoder implements IDecoder {
-	private static final IWriteLog log = new LogWriter(MyDecoder.class);
+	private static final IWriteLog log = new Log4j2Writer(MyDecoder.class);
 
 	private Queue<IProtocol> resluts = null;// 解析结果
 	private IProtocol protocol = null;// 当前数据
