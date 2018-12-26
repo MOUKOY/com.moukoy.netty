@@ -1,7 +1,7 @@
 package soft.net.sconectclient;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +30,7 @@ public class ClientCheckConTdStore {
 	 */
 	public ClientCheckConTdStore() {
 		scheduledSercice = Executors.newScheduledThreadPool(ConfigClient.CHECKTDPOOLNUMBER);
-		chanels = new HashMap<>();
+		chanels = new ConcurrentHashMap<>();
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class ClientCheckConTdStore {
 	 * 
 	 * @param tdThread
 	 */
-	public void run(ClientCheckConTd tdThread) {
+	public void excute(ClientCheckConTd tdThread) {
 		addChanel(tdThread.getChanel());
 		scheduledSercice.scheduleWithFixedDelay(tdThread, ConfigClient.SENDDATA_TIMEOUT * 1000,
 				ConfigClient.CONNET_RETRY_INTERVAL, TimeUnit.MILLISECONDS);

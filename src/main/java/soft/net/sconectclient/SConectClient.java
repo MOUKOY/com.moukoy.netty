@@ -167,7 +167,7 @@ public class SConectClient implements IClientNet {
 		ClientChanel chanel = new ClientChanel(handler.getListener());
 		if (keep && !isRecon) {// 长连接只建立一次
 			ClientCheckConTd tdThread = new ClientCheckConTd(bstrap, chanel, ip, port);
-			longConTdStore.run(tdThread);
+			longConTdStore.excute(tdThread);
 		}
 
 		if (f.isSuccess()) {
