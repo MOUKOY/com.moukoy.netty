@@ -304,7 +304,7 @@ public class LConectServer implements ISvrNet {
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 			try {
-				log.warn("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
+				log.info("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
 				closeConnect(ctx);
 			} catch (Exception e) {
 			}
@@ -324,7 +324,7 @@ public class LConectServer implements ISvrNet {
 				}
 
 			} catch (NoCurrentPortConnectException e) {
-				log.warn("server network exception {} {}", ctx.channel().remoteAddress().toString(), e);
+				log.info("server network exception {} {}", ctx.channel().remoteAddress().toString(), e);
 			} finally {
 				ctx.close();// 出现异常时关闭channel
 			}
