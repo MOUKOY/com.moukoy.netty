@@ -50,7 +50,18 @@ public class ClientChanel extends AChanelID implements ISendData {
 		return listener.getNetSource().sendData(data);
 	}
 
+	@Override
+	public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
+		return listener.getNetSource().sendData(netdatas, isWait);
+	}
+
+	@Override
+	public boolean sendData(byte[] datas) throws Exception {
+		return listener.getNetSource().sendData(datas);
+	}
+
 	public void close() {
 		listener.release();
 	}
+
 }

@@ -9,7 +9,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.util.ReferenceCountUtil;
 import soft.common.StringUtil;
-import soft.net.exception.NetBuildBytesNullException;
+import soft.common.exception.DataIsNullException;
 import soft.net.exception.NetSendDataIsNull;
 import soft.net.ifs.IBytesBuild;
 
@@ -33,17 +33,30 @@ public class SendDataUtil {
 	 * send message
 	 * 
 	 * @param ch
-	 * @param datas
+	 * @param netData
 	 * @param waitWriteble 是否等待可写发送，true 等待 false：直接返回
 	 * @throws Exception
 	 */
 	public static boolean sendData(Channel ch, IBytesBuild netData, boolean waitWriteble) throws Exception {
-		boolean result = false;
 		if (netData == null)
 			throw new NetSendDataIsNull();
 		byte[] datas = netData.buildBytes();
+		return sendData(ch, datas, waitWriteble);
+
+	}
+
+	/**
+	 * send message
+	 * 
+	 * @param ch
+	 * @param datas
+	 * @param waitWriteble 是否等待可写发送，true 等待 false：直接返回
+	 * @throws Exception
+	 */
+	public static boolean sendData(Channel ch, byte[] datas, boolean waitWriteble) throws Exception {
+		boolean result = false;
 		if (datas == null)
-			throw new NetBuildBytesNullException();
+			throw new DataIsNullException("发送byte[]数据为空");
 
 		ByteBuf buff = null;
 		try {
@@ -64,4 +77,5 @@ public class SendDataUtil {
 		}
 		return result;
 	}
+
 }

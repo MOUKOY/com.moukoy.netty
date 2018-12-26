@@ -22,4 +22,19 @@ public interface ISendData {
 	 * @param data
 	 */
 	boolean sendData(IBytesBuild data) throws Exception;
+
+	/**
+	 * 发送数据是否等待对端缓冲区处理【等待】
+	 * 
+	 * @param netdatas
+	 * @param isWait
+	 */
+	boolean sendData(byte[] netdatas, boolean isWait) throws Exception;
+
+	/**
+	 * 不等待立即返回
+	 * 
+	 * @param datas
+	 */
+	boolean sendData(byte[] datas) throws Exception;
 }

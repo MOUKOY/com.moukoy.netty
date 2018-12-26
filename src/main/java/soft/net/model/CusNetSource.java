@@ -31,6 +31,16 @@ public class CusNetSource implements INetChanel {
 	}
 
 	@Override
+	public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
+		return SendDataUtil.sendData(chanel, netdatas, isWait);
+	}
+
+	@Override
+	public boolean sendData(byte[] datas) throws Exception {
+		return sendData(datas, false);
+	}
+
+	@Override
 	public void close() {
 		chanel.close();
 	}
@@ -106,4 +116,5 @@ public class CusNetSource implements INetChanel {
 	public boolean isLongConnect() {
 		return longConnect;
 	}
+
 }
