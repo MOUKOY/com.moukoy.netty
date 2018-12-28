@@ -36,6 +36,7 @@ import soft.net.conf.CongfigServer;
 import soft.net.conf.IPAddrPackage;
 import soft.net.exception.ConectClientsFullException;
 import soft.net.exception.NoCurrentPortConnectException;
+import soft.net.exception.ReadbleException;
 import soft.net.ifs.IByteBuff;
 import soft.net.ifs.IBytesBuild;
 import soft.net.ifs.INetChanel;
@@ -79,8 +80,8 @@ public class LConectServer implements ISvrNet {
 
 		System.setProperty("io.netty.leakDetection.maxRecords", "100");
 		System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
-		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
-		// ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);//
+		// ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
+		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);
 		// 应用级别
 
 		int processorsNumber = Runtime.getRuntime().availableProcessors();
@@ -119,11 +120,13 @@ public class LConectServer implements ISvrNet {
 				NetEventListener listener = InstanceUitl.createObject(clazz, ch);
 				LConectServerHandler shEchoServerHandler = new LConectServerHandler(listener);
 				ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
-				ch.pipeline().addLast("MyServerHandler", shEchoServerHandler);
+				ch.pipeline().addLast(READHANDLE, shEchoServerHandler);
 
 			}
 		});
 	}
+
+	private static final String READHANDLE = "MyServerHandler";
 
 	private void initListeners() throws LoadReflectException {
 		listers = new ListenerStore();
@@ -172,7 +175,7 @@ public class LConectServer implements ISvrNet {
 
 	}
 
-	private boolean closed = false;
+	private boolean closed = false;// 服务端是否已关闭
 
 	@Override
 	public void close() {
@@ -288,11 +291,13 @@ public class LConectServer implements ISvrNet {
 			try {
 				if (obj instanceof ByteBuf) {
 					in = (ByteBuf) obj;
-					IByteBuff inbuff = new NetByteBuff(in);
-					in.retain();
-					listener.dataReciveEvent(inbuff);
+					if (in.isReadable()) {
+						IByteBuff inbuff = new NetByteBuff(in);
+						in.retain();
+						listener.dataReciveEvent(inbuff);
+					} else
+						throw new ReadbleException(listener.getNetSource().getRIpPort() + " can not readble");
 				}
-
 			} catch (Exception e2) {
 				log.error(e2);
 			} finally {

@@ -5,6 +5,8 @@ import java.util.EventListener;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import soft.net.ifs.IByteBuff;
+import soft.net.ifs.IBytesBuild;
+import soft.net.ifs.ISendData;
 import soft.net.protocol.IDecoder;
 import soft.net.protocol.IProtocol;
 import soft.net.protocol.MyDecoder;
@@ -15,7 +17,7 @@ import soft.net.protocol.MyDecoder;
  * @author fanpei
  *
  */
-public abstract class NetEventListener implements EventListener {
+public abstract class NetEventListener implements EventListener, ISendData {
 	protected IDecoder decoder;
 	protected CusNetSource channel;// 连接链路
 
@@ -34,7 +36,7 @@ public abstract class NetEventListener implements EventListener {
 	}
 
 	public void release() {
-		if (channel != null)
+		if (checkChannel())
 			channel.close();
 	}
 
@@ -61,5 +63,37 @@ public abstract class NetEventListener implements EventListener {
 	 * @return
 	 */
 	public abstract IProtocol getProtocol();
+
+	@Override
+	public boolean sendData(byte[] datas) throws Exception {
+		if (checkChannel())
+			return channel.sendData(datas);
+		return false;
+	}
+
+	@Override
+	public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
+		if (checkChannel())
+			return channel.sendData(netdatas, isWait);
+		return false;
+	}
+
+	@Override
+	public boolean sendData(IBytesBuild data) throws Exception {
+		if (checkChannel())
+			return channel.sendData(data);
+		return false;
+	}
+
+	@Override
+	public boolean sendData(IBytesBuild netdata, boolean isWait) throws Exception {
+		if (checkChannel())
+			return channel.sendData(netdata, isWait);
+		return false;
+	}
+
+	private boolean checkChannel() {
+		return channel != null;
+	}
 
 }

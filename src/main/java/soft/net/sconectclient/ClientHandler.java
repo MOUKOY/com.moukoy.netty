@@ -3,6 +3,7 @@ package soft.net.sconectclient;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.ReferenceCountUtil;
 import soft.common.log.IWriteLog;
 import soft.common.log.Log4j2Writer;
 import soft.net.ifs.IByteBuff;
@@ -62,8 +63,11 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			listener.dataReciveEvent(inbuff);
 		} catch (Exception e) {
 			log.error("读取数据执行操作时发生异常", e);
-		}
+		} finally {
 
+			if (in != null && in.refCnt() > 0)// 大于0才释放
+				ReferenceCountUtil.release(in);
+		}
 	}
 
 	@Override

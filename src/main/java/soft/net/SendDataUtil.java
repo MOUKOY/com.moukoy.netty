@@ -1,6 +1,7 @@
 package soft.net;
 
 import java.io.IOException;
+import java.io.NotActiveException;
 import java.net.InetSocketAddress;
 
 import io.netty.buffer.ByteBuf;
@@ -55,12 +56,15 @@ public class SendDataUtil {
 	 */
 	public static boolean sendData(Channel ch, byte[] datas, boolean waitWriteble) throws Exception {
 		boolean result = false;
-		if (datas == null)
-			throw new DataIsNullException("发送byte[]数据为空");
+		if (ch != null) {
+			if (!ch.isActive())
+				throw new NotActiveException("当前连接不活跃或未连接,不可用");
 
-		ByteBuf buff = null;
-		try {
-			if (ch != null) {
+			if (datas == null)
+				throw new DataIsNullException("发送byte[]数据为空");
+
+			ByteBuf buff = null;
+			try {
 				if (!waitWriteble && !ch.isWritable()) {
 					String portStr = Integer.toString(((InetSocketAddress) ch.localAddress()).getPort());
 					throw new IOException(StringUtil.getMsgStr("当前[{}]-[{}]连接发送IO不可写", portStr, ch.remoteAddress()));
@@ -70,10 +74,11 @@ public class SendDataUtil {
 				buff.retain();
 				ch.writeAndFlush(buff);
 				result = true;
+
+			} finally {
+				if (buff != null && buff.refCnt() > 0)// 大于0才释放
+					ReferenceCountUtil.release(buff);
 			}
-		} finally {
-			if (buff != null && buff.refCnt() > 0)// 大于0才释放
-				ReferenceCountUtil.release(buff);
 		}
 		return result;
 	}

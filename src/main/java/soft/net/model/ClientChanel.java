@@ -1,8 +1,10 @@
 package soft.net.model;
 
 import io.netty.channel.Channel;
+import soft.common.ExceptionUtil;
+import soft.common.log.IWriteLog;
+import soft.common.log.Log4j2Writer;
 import soft.net.ifs.IBytesBuild;
-import soft.net.ifs.ISendData;
 
 /**
  * 客户端长连接链路
@@ -11,7 +13,9 @@ import soft.net.ifs.ISendData;
  * @date 2018-09-10 03:50
  *
  */
-public class ClientChanel extends AChanelID implements ISendData {
+public class ClientChanel extends AChanelID {
+	private static final IWriteLog log = new Log4j2Writer(ClientChanel.class);
+
 	private NetEventListener listener;
 	private boolean runFlag = true; // 运行标志
 
@@ -36,28 +40,51 @@ public class ClientChanel extends AChanelID implements ISendData {
 		this.listener.updateChanel(ch);
 	}
 
+	public ClientChanel() {
+	}
+
 	public ClientChanel(NetEventListener listener) {
 		this.listener = listener;
 	}
 
-	@Override
-	public boolean sendData(IBytesBuild data, boolean isWait) throws Exception {
-		return listener.getNetSource().sendData(data, isWait);
+	public boolean sendData(IBytesBuild data, boolean isWait) {
+		try {
+			listener.sendData(data, isWait);
+			return true;
+		} catch (Exception e) {
+			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
+		}
+		return false;
 	}
 
-	@Override
-	public boolean sendData(IBytesBuild data) throws Exception {
-		return listener.getNetSource().sendData(data);
+
+	public boolean sendData(IBytesBuild data) {
+		try {
+			return listener.sendData(data);
+		} catch (Exception e) {
+			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
+		}
+		return false;
 	}
 
-	@Override
-	public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
-		return listener.getNetSource().sendData(netdatas, isWait);
+
+	public boolean sendData(byte[] netdatas, boolean isWait) {
+		try {
+			return listener.sendData(netdatas, isWait);
+		} catch (Exception e) {
+			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
+		}
+		return false;
 	}
 
-	@Override
-	public boolean sendData(byte[] datas) throws Exception {
-		return listener.getNetSource().sendData(datas);
+
+	public boolean sendData(byte[] datas) {
+		try {
+			return listener.sendData(datas);
+		} catch (Exception e) {
+			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
+		}
+		return false;
 	}
 
 	public void close() {

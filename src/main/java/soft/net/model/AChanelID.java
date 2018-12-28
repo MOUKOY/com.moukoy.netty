@@ -27,6 +27,7 @@ public abstract class AChanelID {
 	 * 
 	 * @param chanelId
 	 */
+	@Deprecated
 	public void resetChanelId(String chanelId) {
 		this.chanelId = chanelId;
 	}

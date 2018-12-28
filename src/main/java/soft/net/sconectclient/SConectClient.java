@@ -96,29 +96,44 @@ public class SConectClient implements IClientNet {
 	}
 
 	@Override
-	public void sendDataToSvr(String ip, int port, IBytesBuild data, int timeout) throws Exception {
-		buildConnect(ip, port, false, timeout, new ISendDataToServer() {
-
-			@Override
-			public void sendData(ClientHandler handler) throws Exception {
-				try {
-					handler.getChannel().sendData(data, true);
-				} finally {
-					handler.getChannel().close();
+	public boolean sendDataToSvr(String ip, int port, IBytesBuild data, int timeout) throws Exception {
+		try {
+			buildConnect(ip, port, false, timeout, new ISendDataToServer() {
+				@Override
+				public void sendData(ClientChanel channel) throws Exception {
+					try {
+						if (channel != null)
+							channel.sendData(data, true);
+					} finally {
+						if (channel != null)
+							channel.close();
+					}
 				}
-			}
-		}, false);
+			}, false, true);
+			return true;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@Override
-	public ClientChanel connectServer(String ip, int port, int timeout) throws Exception {
-		return buildConnect(ip, port, true, timeout, null, false);
+	public ClientChanel connectServer(String ip, int port, int timeout) {
+		ClientChanel ch = new ClientChanel();
+		try {
+			ch.setRunFlag(false);
+			ch = buildConnect(ip, port, true, timeout, null, false, false);
+		} catch (Exception e) {
+			log.warn("长连接[{}]发生错误", ch.getListener().getNetSource().getRIpPort(), e);
+		}
+		return ch;
 	}
 
 	@Override
-	public void sendDataToSvr(NetEventListener listener, IBytesBuild data) throws Exception {
-		listener.getNetSource().sendData(data);
+	public boolean sendDataToSvr(NetEventListener listener, IBytesBuild data) throws Exception {
+		return listener.sendData(data);
 	}
+
+	private static final String READERHANDLER = "readerHandler";
 
 	/**
 	 * handler初始化器
@@ -134,60 +149,57 @@ public class SConectClient implements IClientNet {
 			ChannelPipeline pipeline = ch.pipeline();
 			NetEventListener listener = creator.getListener(ch);
 			ClientHandler handler = new ClientHandler(listener, store);
-			pipeline.addLast(ch.id().asLongText(), handler);
+			pipeline.addFirst(READERHANDLER, handler);
 		}
 	}
 
 	/**
+	 * @param outchanle 长连接时向外返回的channel
 	 * @param ip
 	 * @param port
-	 * @param keep    true 长连接 false 短连接
-	 * @param timeout 建立连接超时时间
+	 * @param keep      true 长连接 false 短连接
+	 * @param timeout   建立连接超时时间
 	 * 
-	 * @param isend   发送数据操作 可为空
-	 * @param isRecon 是否是重连操作
+	 * @param isend     发送数据操作 可为空
+	 * @param isRecon   是否是重连操作
+	 * @param throwEx   是否抛出异常
 	 * @return
 	 * @throws Exception
 	 */
 	private ClientChanel buildConnect(String ip, int port, boolean keep, int timeout, ISendDataToServer isend,
-			boolean isRecon) throws Exception {
-
+			boolean isRecon, boolean throwEx) throws Exception {
+		final ClientChanel[] outchanles = new ClientChanel[1];
 		ChannelFuture f = bstrap.connect(ip, port);// 连接服务端
 		// ClientConectMonitor monitor = new ClientConectMonitor();
 		f.addListener(new GenericFutureListener<Future<? super Void>>() {
 			@Override
 			public void operationComplete(Future<? super Void> future) throws Exception {
-				// monitor.notifyAll();
+				ChannelPipeline pipeline = f.channel().pipeline();
+				ClientHandler handler = (ClientHandler) pipeline.get(READERHANDLER);
+				outchanles[0] = new ClientChanel(handler.getListener());
+				if (keep && !isRecon) {// 长连接只建立一次
+					ClientCheckConTd tdThread = new ClientCheckConTd(bstrap, outchanles[0], ip, port);
+					longConTdStore.excute(tdThread);
+				}
 			}
 		});
 		f.await();
 		// monitor.connectWait(timeout);
-		ChannelPipeline pipeline = f.channel().pipeline();
-		ClientHandler handler = (ClientHandler) pipeline.get(f.channel().id().asLongText());
-		ClientChanel chanel = new ClientChanel(handler.getListener());
-		if (keep && !isRecon) {// 长连接只建立一次
-			ClientCheckConTd tdThread = new ClientCheckConTd(bstrap, chanel, ip, port);
-			longConTdStore.excute(tdThread);
-		}
-
 		if (f.isSuccess()) {
 			log.info("与服务器{}:{} 连接建立成功...", ip, port);
 			if (isend != null) {
-				isend.sendData(handler);
-				// if (handler.getListener().reciveWait(timeout)) // 3.等待数据发送后的反馈
-				// throw new TimeoutException("未收到服务" + ip + ":" + port +
-				// "反馈结果，数据接收超时,请检查网络连接或服务是否开启");
+				isend.sendData(outchanles[0]);
 			}
 		} else {
 			log.info("与服务器{}:{} 连接建立失败...", ip, port);
-			throw new ConectSeverException("建立连接超时,请检查网络连接或服务是否开启", f.cause());
+			if (throwEx)
+				throw new ConectSeverException("建立连接超时,请检查网络连接或服务是否开启", f.cause());
 		}
-
-		return chanel;
+		return outchanles[0];
 	}
 
 	private interface ISendDataToServer {
-		void sendData(ClientHandler handler) throws Exception;
+		void sendData(ClientChanel clientChanle) throws Exception;
 	}
 
 }
