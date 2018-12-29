@@ -47,40 +47,44 @@ public class ClientChanel extends AChanelID {
 		this.listener = listener;
 	}
 
+	private boolean checkListener() {
+		return listener != null;
+	}
+
 	public boolean sendData(IBytesBuild data, boolean isWait) {
 		try {
-			listener.sendData(data, isWait);
-			return true;
+			if (checkListener())
+				return listener.sendData(data, isWait);
 		} catch (Exception e) {
 			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
 		}
 		return false;
 	}
-
 
 	public boolean sendData(IBytesBuild data) {
 		try {
-			return listener.sendData(data);
+			if (checkListener())
+				return listener.sendData(data);
 		} catch (Exception e) {
 			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
 		}
 		return false;
 	}
-
 
 	public boolean sendData(byte[] netdatas, boolean isWait) {
 		try {
-			return listener.sendData(netdatas, isWait);
+			if (checkListener())
+				return listener.sendData(netdatas, isWait);
 		} catch (Exception e) {
 			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
 		}
 		return false;
 	}
 
-
 	public boolean sendData(byte[] datas) {
 		try {
-			return listener.sendData(datas);
+			if (checkListener())
+				return listener.sendData(datas);
 		} catch (Exception e) {
 			log.warn("发送数据异常:{}", ExceptionUtil.getCauseMessage(e));
 		}

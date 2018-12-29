@@ -118,9 +118,8 @@ public class SConectClient implements IClientNet {
 
 	@Override
 	public ClientChanel connectServer(String ip, int port, int timeout) {
-		ClientChanel ch = new ClientChanel();
+		ClientChanel ch = null;
 		try {
-			ch.setRunFlag(false);
 			ch = buildConnect(ip, port, true, timeout, null, false, false);
 		} catch (Exception e) {
 			log.warn("长连接[{}]发生错误", ch.getListener().getNetSource().getRIpPort(), e);
@@ -181,15 +180,16 @@ public class SConectClient implements IClientNet {
 					ClientCheckConTd tdThread = new ClientCheckConTd(bstrap, outchanles[0], ip, port);
 					longConTdStore.excute(tdThread);
 				}
+				if (isend != null) {
+					isend.sendData(outchanles[0]);
+				}
 			}
+
 		});
 		f.await();
 		// monitor.connectWait(timeout);
 		if (f.isSuccess()) {
 			log.info("与服务器{}:{} 连接建立成功...", ip, port);
-			if (isend != null) {
-				isend.sendData(outchanles[0]);
-			}
 		} else {
 			log.info("与服务器{}:{} 连接建立失败...", ip, port);
 			if (throwEx)
