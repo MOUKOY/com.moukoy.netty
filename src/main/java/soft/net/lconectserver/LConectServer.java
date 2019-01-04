@@ -300,6 +300,11 @@ public class LConectServer implements ISvrNet {
 
 		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object obj) {
+			// test
+			if ("GtmcNetEventListener".equals(listener.getListenerTypeStr())) {
+				System.err.println();
+			}
+
 			ByteBuf in = null;
 			try {
 				if (obj instanceof ByteBuf) {

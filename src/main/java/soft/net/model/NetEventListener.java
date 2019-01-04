@@ -64,6 +64,13 @@ public abstract class NetEventListener implements EventListener, ISendData {
 	 */
 	public abstract IProtocol getProtocol();
 
+	/**
+	 * 获取监听类型(字符串形式)
+	 * 
+	 * @return
+	 */
+	public abstract String getListenerTypeStr();
+
 	@Override
 	public boolean sendData(byte[] datas) throws Exception {
 		if (checkChannel())

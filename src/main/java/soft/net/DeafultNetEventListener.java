@@ -51,4 +51,9 @@ public class DeafultNetEventListener extends NetEventListener {
 		return null;
 	}
 
+	@Override
+	public String getListenerTypeStr() {
+		return "DeafultNetEventListener";
+	}
+
 }
