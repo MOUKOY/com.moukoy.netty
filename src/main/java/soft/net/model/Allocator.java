@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.util.ReferenceCountUtil;
+import soft.net.NetBuffRealse;
 
 @Deprecated
 public class Allocator {
@@ -52,8 +52,7 @@ public class Allocator {
 					toCleanQueue.drainTo(toClean);
 
 					for (ByteBuf buffer : toClean) {
-						if (buffer.refCnt() > 0)// 大于0才释放
-							ReferenceCountUtil.release(buffer);
+						NetBuffRealse.realse(buffer);
 					}
 					// lastCleanTime = System.currentTimeMillis();
 				} catch (InterruptedException e) {

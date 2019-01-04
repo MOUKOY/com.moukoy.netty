@@ -3,8 +3,8 @@ package soft.net.model;
 import java.nio.ByteOrder;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.ReferenceCountUtil;
 import soft.common.StringUtil;
+import soft.net.NetBuffRealse;
 import soft.net.ifs.IByteBuff;
 
 public class NetByteBuff implements IByteBuff {
@@ -75,8 +75,7 @@ public class NetByteBuff implements IByteBuff {
 
 	@Override
 	public void release() {
-		if (in.refCnt() > 0)// 大于0才释放
-			ReferenceCountUtil.release(in);
+		NetBuffRealse.realse(in);
 	}
 
 	@Override
@@ -85,24 +84,22 @@ public class NetByteBuff implements IByteBuff {
 	}
 
 	@Override
-	public String toString() {
-		return StringUtil.bytes2HexStr(in.array());
-	}
-
-	private int hasPrintNum = 0;
-
-	@Override
-	public void printHex() {
-		while (hasData()) {
-			byte value = readByte();
-			System.err.print(StringUtil.byte2HexStr(value));
-			System.err.print(" ");
-			if (hasPrintNum % 20 == 0) {
-				System.err.print("\n");
+	public String printHex() {
+		String hexStr = null;
+		ByteBuf tmpbuff = null;
+		try {
+			tmpbuff = in.copy();
+			int len = tmpbuff.readableBytes();
+			if (len > 0) {
+				byte[] printData = new byte[len];
+				tmpbuff.readBytes(printData);
+				hexStr = StringUtil.bytes2HexStr(printData);
 			}
-			hasPrintNum += 1;
+		} finally {
+			NetBuffRealse.realse(tmpbuff);
 		}
 
+		return hexStr;
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
-import io.netty.util.ReferenceCountUtil;
 import soft.common.StringUtil;
 import soft.common.exception.DataIsNullException;
 import soft.net.exception.NetSendDataIsNull;
@@ -76,8 +75,7 @@ public class SendDataUtil {
 				result = true;
 
 			} finally {
-				if (buff != null && buff.refCnt() > 0)// 大于0才释放
-					ReferenceCountUtil.release(buff);
+				NetBuffRealse.realse(buff);
 			}
 		}
 		return result;

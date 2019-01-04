@@ -61,10 +61,7 @@ public class MyDecoder implements IDecoder {
 		} catch (Exception e) {
 			protocol.clear();
 			log.error("解析数据报文错误", e);
-		} finally {
-			in.release();// 释放资源
 		}
-
 	}
 
 	@Override

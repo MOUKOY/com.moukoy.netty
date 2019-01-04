@@ -109,12 +109,14 @@ public class CusByteStream implements IByteBuff {
 	}
 
 	@Override
-	public void printHex() {
-		while (hasData()) {
-			byte value = readByte();
-			System.err.println(StringUtil.byte2HexStr(value));
-			System.err.println("\t");
+	public String printHex() {
+		StringBuilder hexSb = new StringBuilder();
+		if (orgDatas != null) {
+			for (byte bValue : orgDatas) {
+				hexSb.append(StringUtil.byte2HexStr(bValue)).append(" ");
+			}
 		}
+		return hexSb.toString();
 	}
 
 	@Override

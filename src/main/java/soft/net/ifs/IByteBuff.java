@@ -64,6 +64,9 @@ public interface IByteBuff {
 	 */
 	void release();
 
-	void printHex();
+	/**
+	 * 获取数据16进制形式
+	 */
+	String printHex();
 
 }

@@ -3,6 +3,7 @@ package soft.net.lconectserver;
 import java.io.IOException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
@@ -20,10 +21,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import soft.common.ClassUtil;
+import soft.common.ExceptionUtil;
 import soft.common.InstanceUitl;
 import soft.common.StringUtil;
 import soft.common.conf.ConfException;
@@ -32,6 +33,8 @@ import soft.common.exception.LoadReflectException;
 import soft.common.log.IWriteLog;
 import soft.common.log.Log4j2Writer;
 import soft.common.tdPool.TdFixedPoolExcCenter;
+import soft.net.DeafultNetEventListener;
+import soft.net.NetBuffRealse;
 import soft.net.conf.CongfigServer;
 import soft.net.conf.IPAddrPackage;
 import soft.net.exception.ConectClientsFullException;
@@ -132,23 +135,33 @@ public class LConectServer implements ISvrNet {
 		listers = new ListenerStore();
 		for (IPAddrPackage ipAddrPackage : CongfigServer.HOSTS) {
 			if (StringUtil.isStrNullOrWhiteSpace(ipAddrPackage.getListenerClass())) {
-				log.warn("init warn,this address:{} does't has netlistener", ipAddrPackage.getHost().getAddrStr());
+				String msg = StringUtil.getMsgStr("init warn,this address:{} does't has netlistener",
+						ipAddrPackage.getHost().getAddrStr());
+				log.warn(msg);
+				System.err.println(msg);
 				continue;
 			}
-			Class<?> clazz = ClassUtil.getSingleClass(ipAddrPackage.getListenerClass(), IPListener.class);
-			if (clazz != null) {
-				try {
-					@SuppressWarnings("unchecked")
-					Class<NetEventListener> lis = (Class<NetEventListener>) clazz;
-					NioSocketChannel ch = new NioSocketChannel();
-					InstanceUitl.createObject(lis, ch);
-					listers.add(ipAddrPackage.getHost().getAddrStr(), lis);
-				} catch (Exception e) {
-					throw new LoadReflectException("load listener err:" + ipAddrPackage.getListenerClass()
-							+ "please check if this class  contain constructor(NioSocketChannel ch)?");
-				}
-			} else
-				throw new LoadReflectException("not found listener,please check conf listnerLoc!");
+			Class<?> clazz = null;
+			try {
+				clazz = ClassUtil.getSingleClass(ipAddrPackage.getListenerClass(), IPListener.class);
+			} catch (NoSuchElementException | ClassNotFoundException e) {
+				String msg = StringUtil.getMsgStr(
+						"load listerner err:{},will use deafult linster:soft.ne.DeafultNetEventListener",
+						ExceptionUtil.getCauseMessage(e));
+				log.warn(msg);
+				System.err.println(msg);
+				clazz = DeafultNetEventListener.class;
+			}
+			try {
+				@SuppressWarnings("unchecked")
+				Class<NetEventListener> lis = (Class<NetEventListener>) clazz;
+				NioSocketChannel ch = new NioSocketChannel();
+				InstanceUitl.createObject(lis, ch);
+				listers.add(ipAddrPackage.getHost().getAddrStr(), lis);
+			} catch (Exception e) {
+				throw new LoadReflectException("load listener err:" + ipAddrPackage.getListenerClass()
+						+ "please check if this class  contain constructor(NioSocketChannel ch)?");
+			}
 		}
 
 	}
@@ -293,16 +306,14 @@ public class LConectServer implements ISvrNet {
 					in = (ByteBuf) obj;
 					if (in.isReadable()) {
 						IByteBuff inbuff = new NetByteBuff(in);
-						in.retain();
-						listener.dataReciveEvent(inbuff);
+						listener.dataReciveEvent(inbuff);//
 					} else
 						throw new ReadbleException(listener.getNetSource().getRIpPort() + " can not readble");
 				}
 			} catch (Exception e2) {
 				log.error(e2);
 			} finally {
-				if (in != null && in.refCnt() > 0)// 大于0才释放
-					ReferenceCountUtil.release(in);
+				NetBuffRealse.realse(in);
 			}
 		}
 
