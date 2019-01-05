@@ -19,7 +19,7 @@ public class ConfigClient extends Conf {
 	/**
 	 * 毫秒 重连间隔
 	 */
-	public static final int CONNET_RETRY_INTERVAL = 2000;
+	public static final int CONNET_RETRY_INTERVAL = 5000;
 	/**
 	 * 秒，发送数据超时时间
 	 */
@@ -31,7 +31,7 @@ public class ConfigClient extends Conf {
 	/**
 	 * 毫秒 心跳发送间隔
 	 */
-	public static int HEARBEAT_INTERVAL;
+	public static int HEARBEAT_INTERVAL = 10 * 1000;
 
 	/**
 	 * 检查断线和发送心跳的线程个数
@@ -42,12 +42,15 @@ public class ConfigClient extends Conf {
 	 */
 	public static final int SHORTCONECT_REVDATA_WAITTIMEOUT = 60 * 1000;
 
+	@Deprecated
 	private static List<IPAddrPackage> hosts;
 
+	@Deprecated
 	public static List<IPAddrPackage> getHosts() {
 		return hosts;
 	}
 
+	@Deprecated
 	public static void init() throws ConfException, IOException {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);
 		if (values == null || values.isEmpty())

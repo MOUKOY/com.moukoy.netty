@@ -12,13 +12,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.ResourceLeakDetector;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import soft.common.conf.ConfException;
 import soft.common.exception.DataIsNullException;
 import soft.common.log.IWriteLog;
 import soft.common.log.Log4j2Writer;
-import soft.net.conf.ConfigClient;
 import soft.net.exception.ConectSeverException;
 import soft.net.ifs.IBytesBuild;
 import soft.net.ifs.IClientNet;
@@ -42,7 +42,7 @@ public class SConectClient implements IClientNet {
 
 	private ClientCheckConTdStore longConTdStore;
 	// private TdCachePoolExctor connectPool;// 固定线程池执行器
-	private EventLoopGroup group;
+	private EventLoopGroup workgroup;
 	private Bootstrap bstrap;
 	private ClientChannelStore store;
 
@@ -63,7 +63,7 @@ public class SConectClient implements IClientNet {
 
 		SConectClient.creator = creator;
 		SConectClient.heartData = heartData;
-		ConfigClient.init();
+		// ConfigClient.init();
 
 	}
 
@@ -75,12 +75,13 @@ public class SConectClient implements IClientNet {
 		store = new ClientChannelStore();
 		// connectPool = new TdCachePoolExctor();// 执行重连
 		longConTdStore = new ClientCheckConTdStore();
-		group = new NioEventLoopGroup(1);
 		bstrap = new Bootstrap();
+		// workgroup = new NioEventLoopGroup(1);
+		workgroup = new NioEventLoopGroup(4, new DefaultThreadFactory("client", true));
 		// bstrap.option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 128 *
 		// 1024);
 		// bstrap.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 64 * 1024);
-		bstrap.group(group).channel(NioSocketChannel.class);
+		bstrap.group(workgroup).channel(NioSocketChannel.class);
 		bstrap.option(ChannelOption.TCP_NODELAY, true); // 设置立即发送;
 		bstrap.option(ChannelOption.AUTO_READ, true);
 		bstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
@@ -95,8 +96,8 @@ public class SConectClient implements IClientNet {
 			store.closeAllConnect();
 			longConTdStore.shutdownNow();
 		} catch (Exception e) {
-			if (group != null)
-				group.shutdownGracefully();
+			if (workgroup != null)
+				workgroup.shutdownGracefully();
 		}
 	}
 

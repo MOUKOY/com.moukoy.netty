@@ -1,11 +1,9 @@
 package soft.net.lconectserver;
 
 import java.io.IOException;
-import java.nio.channels.spi.SelectorProvider;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -58,7 +56,7 @@ public class LConectServer implements ISvrNet {
 	private ListenerStore listers = null;
 
 	// private IListenerCreator creator = null;
-	private ServerBootstrap bootstrap;
+	private ServerBootstrap svrbootstrap;
 	private EventLoopGroup workergroup;
 	private EventLoopGroup bossGroup;
 
@@ -80,16 +78,21 @@ public class LConectServer implements ISvrNet {
 		initListeners();
 		this.store = new ServerConMap();
 
-		int processorsNumber = Runtime.getRuntime().availableProcessors();
-		this.bootstrap = new ServerBootstrap();// 引导辅助程序
-		this.bossGroup = new NioEventLoopGroup(1);
-		ThreadFactory boosstf = new DefaultThreadFactory("Netty-Worker");
-		this.workergroup = new NioEventLoopGroup(processorsNumber, boosstf, SelectorProvider.provider());
-		this.bootstrap.group(bossGroup, workergroup);
+		// int processorsNumber = Runtime.getRuntime().availableProcessors();
+		this.svrbootstrap = new ServerBootstrap();// 引导辅助程序
+		this.bossGroup = new NioEventLoopGroup(CongfigServer.PARENTGROUPTDCOUNT,
+				new DefaultThreadFactory("server1", true));
+		this.workergroup = new NioEventLoopGroup(CongfigServer.CHILDGROUPTDCOUNT,
+				new DefaultThreadFactory("Netty-Worker", true));
+		// this.bossGroup = new NioEventLoopGroup(1);
+		// ThreadFactory boosstf = new DefaultThreadFactory("Netty-Worker");
+		// this.workergroup = new NioEventLoopGroup(processorsNumber, Executors.,
+		// SelectorProvider.provider());
+		this.svrbootstrap.group(bossGroup, workergroup);
 
 		// 设置nio类型的channel
-		this.bootstrap.channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 2048);
-		this.bootstrap.option(ChannelOption.SO_RCVBUF, 1024 * 32).option(ChannelOption.SO_SNDBUF, 1024 * 32)
+		this.svrbootstrap.channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 2048);
+		this.svrbootstrap.option(ChannelOption.SO_RCVBUF, 1024 * 32).option(ChannelOption.SO_SNDBUF, 1024 * 32)
 				.option(ChannelOption.TCP_NODELAY, false).option(ChannelOption.ALLOW_HALF_CLOSURE, true)// 半关闭
 				// 设置立即发送;
 
@@ -104,7 +107,7 @@ public class LConectServer implements ISvrNet {
 				.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
 				.childOption(ChannelOption.TCP_NODELAY, false);
 
-		this.bootstrap.childHandler(new ChannelInitializer<NioSocketChannel>() {// 有连接到达时会创建一个channel
+		this.svrbootstrap.childHandler(new ChannelInitializer<NioSocketChannel>() {// 有连接到达时会创建一个channel
 			@Override
 			protected void initChannel(NioSocketChannel ch) throws Exception {
 				if (closed) {// 关闭不接受新的连接
@@ -115,7 +118,8 @@ public class LConectServer implements ISvrNet {
 						.getListenerClass(ch.localAddress().toString().replaceAll("/", ""));
 				NetEventListener listener = InstanceUitl.createObject(clazz, ch);
 				LConectServerHandler shEchoServerHandler = new LConectServerHandler(listener);
-				ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
+				if (CongfigServer.CHANLEDATARECVINTERVAL > 0)
+					ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
 				ch.pipeline().addLast(READHANDLE, shEchoServerHandler);
 
 			}
@@ -373,7 +377,7 @@ public class LConectServer implements ISvrNet {
 				td.setName(String.format("网络监听 [%s]", ip_port));
 
 				log.info("server Attemping to listenning on " + ip_port);
-				f = bootstrap.bind(ip, port).sync();// 配置完成，开始绑定server，通过调用sync同步方法阻塞直到绑定成功
+				f = svrbootstrap.bind(ip, port).sync();// 配置完成，开始绑定server，通过调用sync同步方法阻塞直到绑定成功
 				log.info("server started and listen on " + ip_port);
 				f.channel().closeFuture().sync();
 			} catch (Exception e) {
