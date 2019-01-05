@@ -1,7 +1,6 @@
 package soft.net.conf;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -42,32 +41,15 @@ public class ConfigClient extends Conf {
 	 */
 	public static final int SHORTCONECT_REVDATA_WAITTIMEOUT = 60 * 1000;
 
-	@Deprecated
-	private static List<IPAddrPackage> hosts;
 
-	@Deprecated
-	public static List<IPAddrPackage> getHosts() {
-		return hosts;
-	}
-
-	@Deprecated
 	public static void init() throws ConfException, IOException {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);
 		if (values == null || values.isEmpty())
 			throw new ConfException(StringUtil.getMsgStr("this conf file {} read error", ConfReader.confPath));
 		for (Entry<String, String> v : values.entrySet()) {
-
 			switch (v.getKey()) {
-			case "clientips":
-				hosts = getHosts(v.getKey(), v.getValue());
-				break;
-
-			case "cliHeartInterval":
-				HEARBEAT_INTERVAL_S = Byte.parseByte(v.getValue());
-				HEARBEAT_INTERVAL = HEARBEAT_INTERVAL_S * 1000;
-				break;
-
 			default:
+				Conf.init(v);
 				break;
 
 			}

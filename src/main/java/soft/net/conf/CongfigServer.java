@@ -45,35 +45,36 @@ public class CongfigServer extends Conf {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);
 		if (values == null || values.isEmpty())
 			throw new ConfException(StringUtil.getMsgStr("this conf file {} read error", ConfReader.confPath));
-		for (Entry<String, String> v : values.entrySet()) {
 
+		for (Entry<String, String> v : values.entrySet()) {
 			switch (v.getKey()) {
-			case "serverips":
+			case CONF_SERVERIPS:
 				HOSTS = getHosts(v.getKey(), v.getValue());
 				break;
-			case "maxClients":
+			case CONF_MAXCLIENTS:
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
 					MAXCLIENTS = Integer.parseInt(v.getValue());
 				}
 				break;
 
-			case "dataRecvInterval":
+			case CONF_DATARECVINTERVAL:
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
 					CHANLEDATARECVINTERVAL = Integer.parseInt(v.getValue());
 				}
 				break;
 
-			case "parentgroupTdCount":
+			case CONF_PARENTGROUPTDCOUNT:
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
 					PARENTGROUPTDCOUNT = Integer.parseInt(v.getValue());
 				}
 				break;
-			case "childgroupTdCount":
+			case CONF_CHILDGROUPTDCOUNT:
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
 					CHILDGROUPTDCOUNT = Integer.parseInt(v.getValue());
 				}
 				break;
 			default:
+				Conf.init(v);
 				break;
 
 			}

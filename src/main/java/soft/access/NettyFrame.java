@@ -56,9 +56,7 @@ public class NettyFrame {
 		moukoy.sdkcommon.App.init(RunPath);
 
 		// netty
-		nettySetting(level);
 		ConfReader.init(RunPath);
-
 	}
 
 	/**
@@ -72,30 +70,6 @@ public class NettyFrame {
 			return true;
 		} else
 			return false;
-	}
-
-	/**
-	 * netty 配置 DISABLED>SIMPLE>ADVANCED>PARANOID 性能排序,监控级别越来越高，
-	 * 
-	 * @param level 内存泄露监控级别
-	 */
-	private static void nettySetting(ResourceLeakDetector.Level level) {
-
-		System.setProperty("io.netty.noUnsafe", "false");// 屏蔽 jdk.internal.misc.Unsafe.allocateUninitializedArray(int):
-		// unavailable java.lang.ClassNotFoundException:
-		// jdk.internal.misc.Unsafe
-
-		switch (level) {
-		case PARANOID:// 最高级测试监控
-		case ADVANCED:// 高级检测
-			System.setProperty("io.netty.leakDetection.maxRecords", "100");
-			System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
-			ResourceLeakDetector.setLevel(level);
-			break;
-		default:// 默认级别
-			ResourceLeakDetector.setLevel(level);
-			break;
-		}
 	}
 
 	public static void main(String[] args) {

@@ -32,6 +32,7 @@ import soft.common.log.Log4j2Writer;
 import soft.common.tdPool.TdFixedPoolExcCenter;
 import soft.net.DeafultNetEventListener;
 import soft.net.NetBuffRealse;
+import soft.net.conf.Conf;
 import soft.net.conf.CongfigServer;
 import soft.net.conf.IPAddrPackage;
 import soft.net.exception.ConectClientsFullException;
@@ -73,8 +74,8 @@ public class LConectServer implements ISvrNet {
 	 * @throws DataIsNullException
 	 */
 	public LConectServer() throws ConfException, IOException, LoadReflectException, DataIsNullException {
-
 		CongfigServer.init();
+		Conf.nettySetting(Conf.BUFFCHECKLEVEL);
 		initListeners();
 		this.store = new ServerConMap();
 

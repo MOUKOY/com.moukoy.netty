@@ -19,6 +19,8 @@ import soft.common.conf.ConfException;
 import soft.common.exception.DataIsNullException;
 import soft.common.log.IWriteLog;
 import soft.common.log.Log4j2Writer;
+import soft.net.conf.Conf;
+import soft.net.conf.ConfigClient;
 import soft.net.exception.ConectSeverException;
 import soft.net.ifs.IBytesBuild;
 import soft.net.ifs.IClientNet;
@@ -63,7 +65,8 @@ public class SConectClient implements IClientNet {
 
 		SConectClient.creator = creator;
 		SConectClient.heartData = heartData;
-		// ConfigClient.init();
+		ConfigClient.init();
+		Conf.nettySetting(Conf.BUFFCHECKLEVEL);
 
 	}
 
