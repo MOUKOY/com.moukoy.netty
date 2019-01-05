@@ -103,10 +103,7 @@ public class LConectServer implements ISvrNet {
 				.option(ChannelOption.SO_KEEPALIVE, true)
 				.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
 				.childOption(ChannelOption.SO_KEEPALIVE, true)
-				.childOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10 * 1000)
-				// 最大空闲连接时间
-				.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-				.childOption(ChannelOption.TCP_NODELAY, false);
+				.childOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10 * 1000); // 最大空闲连接时间
 
 		this.svrbootstrap.childHandler(new ChannelInitializer<NioSocketChannel>() {// 有连接到达时会创建一个channel
 			@Override
@@ -180,6 +177,7 @@ public class LConectServer implements ISvrNet {
 			if (!closed)
 				throw e;
 		} finally {
+			close();
 			if (threadSver != null)
 				threadSver.shutdownNow();
 		}
