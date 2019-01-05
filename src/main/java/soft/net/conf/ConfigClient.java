@@ -20,9 +20,9 @@ public class ConfigClient extends Conf {
 	 */
 	public static final int CONNET_RETRY_INTERVAL = 5000;
 	/**
-	 * 秒，发送数据超时时间
+	 * 毫秒，发送数据超时时间
 	 */
-	public static final int SENDDATA_TIMEOUT = 10;
+	public static final int SENDDATA_TIMEOUT = 10000;
 	/**
 	 * 秒 心跳发送间隔
 	 */

@@ -95,9 +95,9 @@ public class SConectClient implements IClientNet {
 	@Override
 	public void close() {
 		try {
+			longConTdStore.shutdownNow();
 			// 循环遍历关闭所有长连接
 			store.closeAllConnect();
-			longConTdStore.shutdownNow();
 		} catch (Exception e) {
 			if (workgroup != null)
 				workgroup.shutdownGracefully();

@@ -13,7 +13,7 @@ import soft.common.StaticClass;
 public class NetBuffRealse extends StaticClass {
 
 	public static void realse(ByteBuf in) {
-		if (in != null && in.refCnt() > 0)// 大于0才释放
+		if (in != null)// 大于0才释放//&& in.refCnt() > 0
 			ReferenceCountUtil.release(in);
 	}
 }

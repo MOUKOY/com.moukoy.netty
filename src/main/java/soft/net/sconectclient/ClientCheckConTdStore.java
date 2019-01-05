@@ -1,13 +1,12 @@
 package soft.net.sconectclient;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import soft.net.conf.ConfigClient;
-import soft.net.model.ClientChanel;
 
 /**
  * 自动重连检测线程仓库
@@ -18,7 +17,7 @@ import soft.net.model.ClientChanel;
  */
 public class ClientCheckConTdStore {
 	private ScheduledExecutorService scheduledSercice;// 周期任务执行器
-	private Map<String, ClientChanel> chanels;
+	private List<ClientCheckConTd> tds;
 
 	public ScheduledExecutorService getServervice() {
 		return scheduledSercice;
@@ -30,7 +29,7 @@ public class ClientCheckConTdStore {
 	 */
 	public ClientCheckConTdStore() {
 		scheduledSercice = Executors.newScheduledThreadPool(ConfigClient.CHECKTDPOOLNUMBER);
-		chanels = new ConcurrentHashMap<>();
+		tds = new ArrayList<>();
 	}
 
 	/**
@@ -39,28 +38,18 @@ public class ClientCheckConTdStore {
 	 * @param tdThread
 	 */
 	public void excute(ClientCheckConTd tdThread) {
-		addChanel(tdThread.getChanel());
-		scheduledSercice.scheduleWithFixedDelay(tdThread, ConfigClient.SENDDATA_TIMEOUT * 1000,
+		addChanel(tdThread);
+		scheduledSercice.scheduleWithFixedDelay(tdThread, ConfigClient.SENDDATA_TIMEOUT,
 				ConfigClient.CONNET_RETRY_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 
-	public void addChanel(ClientChanel channel) {
-		if (!chanels.containsKey(channel.getChanelId())) {
-			chanels.put(channel.getChanelId(), channel);
-		}
-	}
-
-	public void removeChannel(ClientChanel chanel) {
-		chanels.remove(chanel.getChanelId());
-	}
-
-	public ClientChanel getChanel(String chanelId) {
-		return chanels.get(chanelId);
+	public void addChanel(ClientCheckConTd td) {
+		tds.add(td);
 	}
 
 	public void shutdownNow() {
-		for (ClientChanel c : chanels.values()) {
-			c.close();
+		for (ClientCheckConTd td : tds) {
+			td.closeConect();
 		}
 		scheduledSercice.shutdown();
 	}

@@ -42,10 +42,12 @@ public class ClientCheckConTd implements Runnable {
 
 	@Override
 	public void run() {
+
 		if (StringUtil.isStringNull(reconectTdName)) {
 			reconectTdName = "客户端重连检测 ";
 			Thread.currentThread().setName(reconectTdName);
 		}
+
 		if (!chanel.isRunFlag())
 			return;
 		try {
@@ -68,6 +70,7 @@ public class ClientCheckConTd implements Runnable {
 	 */
 	public void closeConect() {
 		chanel.setRunFlag(false);
+		chanel.close();
 	}
 
 	/**

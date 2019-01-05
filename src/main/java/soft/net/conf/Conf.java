@@ -37,7 +37,8 @@ public abstract class Conf {
 				hosts.add(new IPAddrPackage(v));
 			}
 		}
-
+		if (hosts.size() == 0)
+			throw new ConfException("does not have any server host needs to linten!");
 		return hosts;
 	}
 
