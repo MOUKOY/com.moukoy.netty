@@ -11,6 +11,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import soft.common.conf.ConfException;
@@ -67,6 +68,10 @@ public class SConectClient implements IClientNet {
 	}
 
 	public SConectClient() {
+		System.setProperty("io.netty.leakDetection.maxRecords", "100");
+		System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
+		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
+
 		store = new ClientChannelStore();
 		// connectPool = new TdCachePoolExctor();// 执行重连
 		longConTdStore = new ClientCheckConTdStore();

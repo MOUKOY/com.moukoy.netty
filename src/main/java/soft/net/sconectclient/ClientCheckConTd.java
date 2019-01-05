@@ -55,6 +55,7 @@ public class ClientCheckConTd implements Runnable {
 			} else if (System.currentTimeMillis() - lastHeatBeat > ConfigClient.HEARBEAT_INTERVAL) {
 				sendHeartBeat();
 				lastHeatBeat = System.currentTimeMillis();
+				log.debug("send heartbeat to server:{}:{}", ip, port);
 			}
 			// Thread.sleep(ConfigClient.CONNET_RETRY_INTERVAL);
 		} catch (Exception e) {

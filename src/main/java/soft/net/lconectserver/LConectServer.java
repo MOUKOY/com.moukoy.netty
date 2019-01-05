@@ -21,7 +21,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import soft.common.ClassUtil;
 import soft.common.ExceptionUtil;
@@ -80,12 +79,6 @@ public class LConectServer implements ISvrNet {
 		CongfigServer.init();
 		initListeners();
 		this.store = new ServerConMap();
-
-		System.setProperty("io.netty.leakDetection.maxRecords", "100");
-		System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
-		// ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
-		ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);
-		// 应用级别
 
 		int processorsNumber = Runtime.getRuntime().availableProcessors();
 		this.bootstrap = new ServerBootstrap();// 引导辅助程序
