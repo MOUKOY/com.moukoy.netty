@@ -6,14 +6,14 @@ import soft.net.model.CusHostAndPort;
 
 public class IPAddrPackage {
 	private CusHostAndPort host;
-	private String ListenerClass;
+	private String ListenerClassPath;// 监听类类路径
 
 	public CusHostAndPort getHost() {
 		return host;
 	}
 
-	public String getListenerClass() {
-		return ListenerClass;
+	public String getListenerClassPath() {
+		return ListenerClassPath;
 	}
 
 	public IPAddrPackage(String hostListener) throws ConfException {
@@ -23,6 +23,6 @@ public class IPAddrPackage {
 					StringUtil.getMsgStr("this key {} is  configure error,it's not correct fomat", hostListener));
 		this.host = new CusHostAndPort(ips[0], Integer.parseInt(ips[1]));
 		if (ips.length == 3)
-			this.ListenerClass = ips[2];
+			this.ListenerClassPath = ips[2];
 	}
 }

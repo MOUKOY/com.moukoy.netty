@@ -129,7 +129,7 @@ public class LConectServer implements ISvrNet {
 	private void initListeners() throws LoadReflectException {
 		listers = new ListenerStore();
 		for (IPAddrPackage ipAddrPackage : CongfigServer.HOSTS) {
-			if (StringUtil.isStrNullOrWhiteSpace(ipAddrPackage.getListenerClass())) {
+			if (StringUtil.isStrNullOrWhiteSpace(ipAddrPackage.getListenerClassPath())) {
 				String msg = StringUtil.getMsgStr("init warn,this address:{} does't has netlistener",
 						ipAddrPackage.getHost().getAddrStr());
 				log.warn(msg);
@@ -138,7 +138,7 @@ public class LConectServer implements ISvrNet {
 			}
 			Class<?> clazz = null;
 			try {
-				clazz = ClassUtil.getSingleClass(ipAddrPackage.getListenerClass(), IPListener.class);
+				clazz = ClassUtil.getSingleClass(ipAddrPackage.getListenerClassPath(), IPListener.class);
 			} catch (NoSuchElementException | ClassNotFoundException e) {
 				String msg = StringUtil.getMsgStr(
 						"load listerner err:{},will use deafult linster:soft.ne.DeafultNetEventListener",
@@ -154,7 +154,7 @@ public class LConectServer implements ISvrNet {
 				InstanceUitl.createObject(lis, ch);
 				listers.add(ipAddrPackage.getHost().getAddrStr(), lis);
 			} catch (Exception e) {
-				throw new LoadReflectException("load listener err:" + ipAddrPackage.getListenerClass()
+				throw new LoadReflectException("load listener err:" + ipAddrPackage.getListenerClassPath()
 						+ "please check if this class  contain constructor(NioSocketChannel ch)?");
 			}
 		}
