@@ -1,6 +1,6 @@
 package soft.net.model;
 
-import soft.common.model.enm.HostType;
+import soft.common.model.enm.EHostType;
 
 /**
  *
@@ -24,10 +24,10 @@ public class CusHostAndPort {
 	private boolean isConnected;
 
 	// 主机类型
-	private HostType type;
+	private EHostType type;
 
 	public CusHostAndPort() {
-		type = HostType.MASTER;
+		type = EHostType.MASTER;
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class CusHostAndPort {
 	 */
 	public CusHostAndPort(boolean longConect, String ip, int port) {
 		this.longConect = longConect;
-		this.type = HostType.MASTER;
+		this.type = EHostType.MASTER;
 		this.IP = ip;
 		this.Port = port;
 	}
@@ -51,7 +51,7 @@ public class CusHostAndPort {
 	 */
 	public CusHostAndPort(String ip, int port) {
 		this.longConect = false;
-		this.type = HostType.MASTER;
+		this.type = EHostType.MASTER;
 		this.IP = ip;
 		this.Port = port;
 	}
@@ -61,7 +61,7 @@ public class CusHostAndPort {
 	 * @param ip
 	 * @param port
 	 */
-	public CusHostAndPort(HostType _type, String ip, int port) {
+	public CusHostAndPort(EHostType _type, String ip, int port) {
 		longConect = false;
 		type = _type;
 		IP = ip;
@@ -105,11 +105,11 @@ public class CusHostAndPort {
 		longConect = keepMap;
 	}
 
-	public HostType getType() {
+	public EHostType getType() {
 		return type;
 	}
 
-	public void setType(HostType type) {
+	public void setType(EHostType type) {
 		this.type = type;
 	}
 

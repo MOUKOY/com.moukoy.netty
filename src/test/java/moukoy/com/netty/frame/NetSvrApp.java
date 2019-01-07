@@ -1,13 +1,8 @@
 package moukoy.com.netty.frame;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLDecoder;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import soft.common.file.PathUtil;
 import soft.net.lconectserver.LConectServer;
 
 /**
@@ -23,10 +18,7 @@ public class NetSvrApp {
 	@Before
 	public void before() {
 		try {
-			URL url = NetSvrApp.class.getProtectionDomain().getCodeSource().getLocation();
-			String runPath = new File(URLDecoder.decode(url.getPath(), "utf-8")).getAbsolutePath();
-			runPath = PathUtil.getParentDir(runPath);// 特别注意：打jar包时启用【调试时注释掉此行】
-			soft.access.NettyFrame.initSysArgs(runPath);
+			soft.access.NettyFrame.initSysArgs();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
