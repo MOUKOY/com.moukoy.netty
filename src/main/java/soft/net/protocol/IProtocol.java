@@ -14,6 +14,13 @@ import soft.net.ifs.IParse;
 public interface IProtocol extends IParse, IBytesBuild {
 
 	/**
+	 * 获取协议数据总长度【byte[]协议流总长度，不代表Datas和Childdatas数据之和】
+	 * 
+	 * @return
+	 */
+	public int getTotalLen();
+
+	/**
 	 * 获取数据
 	 * 
 	 * @return
