@@ -36,7 +36,6 @@ import soft.net.conf.Conf;
 import soft.net.conf.CongfigServer;
 import soft.net.conf.IPAddrPackage;
 import soft.net.exception.ConectClientsFullException;
-import soft.net.exception.NoCurrentPortConnectException;
 import soft.net.exception.ReadbleException;
 import soft.net.ifs.IByteBuff;
 import soft.net.ifs.IBytesBuild;
@@ -281,12 +280,9 @@ public class LConectServer implements ISvrNet {
 				log.info("client has conected success:{}", listener.getNetSource().getRIpPort());
 				store.addChannel(listener.getNetSource());
 				listener.chanelConect();
-			} catch (ConectClientsFullException e) {
-				error = true;
-				log.warn(e.getMessage());
 			} catch (Exception e) {
 				error = true;
-				log.error(e);
+				log.error("连接初始化异常", e);
 			} finally {
 				if (error) {
 					listener.release();
@@ -296,10 +292,6 @@ public class LConectServer implements ISvrNet {
 
 		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object obj) {
-			// test
-			if ("GtmcNetEventListener".equals(listener.getListenerTypeStr())) {
-				System.err.println();
-			}
 
 			ByteBuf in = null;
 			try {
@@ -312,7 +304,7 @@ public class LConectServer implements ISvrNet {
 						throw new ReadbleException(listener.getNetSource().getRIpPort() + " can not readble");
 				}
 			} catch (Exception e2) {
-				log.error(e2);
+				log.error("read data exception", e2);
 			} finally {
 				NetBuffRealse.realse(in);
 			}
@@ -320,12 +312,8 @@ public class LConectServer implements ISvrNet {
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-			try {
-				log.info("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
-				closeConnect(ctx);
-			} catch (Exception e) {
-			}
-
+			log.info("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
+			closeConnect(ctx);
 		}
 
 		private boolean closed = false;
@@ -337,13 +325,12 @@ public class LConectServer implements ISvrNet {
 					log.info("client has disconected:{}", listener.getNetSource().getRIpPort());
 					store.removeChannel(listener.getNetSource());
 					listener.closeEvent();
-					listener.release();
 				}
 
-			} catch (NoCurrentPortConnectException e) {
-				log.info("server network exception {} {}", ctx.channel().remoteAddress().toString(), e);
+			} catch (Exception e) {
+				log.error("close channel exception {}", ctx.channel().remoteAddress().toString(), e);
 			} finally {
-				ctx.close();// 出现异常时关闭channel
+				listener.release();// 出现异常时关闭channel
 			}
 		}
 	}
@@ -371,16 +358,16 @@ public class LConectServer implements ISvrNet {
 		public void run() {
 			String ip_port = null;
 			try {
-				ip_port = String.format("%s:%d", ip, port);
+				ip_port = StringUtil.getMsgStr("{}:{}", ip, port);
 				Thread td = Thread.currentThread();
-				td.setName(String.format("网络监听 [%s]", ip_port));
+				td.setName(StringUtil.getMsgStr("网络监听 [{}]", ip_port));
 
-				log.info("server Attemping to listenning on " + ip_port);
+				log.info("server Attemping to listenning on {}", ip_port);
 				f = svrbootstrap.bind(ip, port).sync();// 配置完成，开始绑定server，通过调用sync同步方法阻塞直到绑定成功
-				log.info("server started and listen on " + ip_port);
+				log.info("server started and listen on {}", ip_port);
 				f.channel().closeFuture().sync();
 			} catch (Exception e) {
-				log.info("server will close the: " + ip_port, e);
+				log.warn("server will close the: {}", ip_port, e);
 			} finally {
 				latch.countDown();
 			}

@@ -44,7 +44,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			store.addChanel(getChannel());
 			listener.chanelConect();
 		} catch (Exception e) {
-			log.error(e);
+			log.error("连接初始化异常", e);
 		}
 
 	}

@@ -131,7 +131,7 @@ public class SConectClient implements IClientNet {
 		try {
 			ch = buildConnect(ip, port, true, timeout, null, false, false);
 		} catch (Exception e) {
-			log.warn("长连接[{}]发生错误", ch.getListener().getNetSource().getRIpPort(), e);
+			log.warn("向[{}]建立长连接发生错误", ch.getListener().getNetSource().getRIpPort(), e);
 		}
 		return ch;
 	}
