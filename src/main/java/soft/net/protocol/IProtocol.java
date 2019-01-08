@@ -1,5 +1,6 @@
 package soft.net.protocol;
 
+import soft.common.exception.NotContainException;
 import soft.net.exception.DecodeDataFailException;
 import soft.net.ifs.IByteBuff;
 import soft.net.ifs.IBytesBuild;
@@ -12,6 +13,14 @@ import soft.net.ifs.IParse;
  *
  */
 public interface IProtocol extends IParse, IBytesBuild {
+
+	/**
+	 * 获取协议设备ID
+	 * 
+	 * @return
+	 * @throws NotContainException 设备ID未初始化,协议不包含设备ID
+	 */
+	public int getDeviceID() throws NotContainException;
 
 	/**
 	 * 获取协议数据总长度【byte[]协议流总长度，不代表Datas和Childdatas数据之和】
