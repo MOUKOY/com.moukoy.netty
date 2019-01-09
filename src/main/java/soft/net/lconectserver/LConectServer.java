@@ -250,7 +250,6 @@ public class LConectServer implements ISvrNet {
 	/**
 	 * Sharable表示此对象在channel间共享 handler类是我们的具体业务类
 	 * 
-	 * @param <IBytesBuild>
 	 */
 	@Sharable
 	// 注解@Sharable可以让它在channels间共享
