@@ -16,10 +16,9 @@ public class NettyFrame {
 	 * @throws Exception
 	 */
 	public static void initSysArgs() throws Exception {
-		System.out.println("sdkcommon is initing....");
 
 		// sdkcommon
-		moukoy.sdkcommon.App.init();
+		moukoy.sdkcommon.SDKCommon.init();
 
 		// netty
 		ConfReader.init();

@@ -25,6 +25,7 @@ public class ConfReader {
 	 */
 	public static void init() throws IOException, ConfException, OstypeMissWatchException, DataIsNullException {
 		String runDir = AppRunPathUitl.getRunPath(ConfReader.class);
+
 		confPath = PathUtil.combinePath(runDir, CONF);
 		File confile = new File(confPath);
 		if (!confile.exists()) {// 不存在使用默认配置
