@@ -29,6 +29,7 @@ public class ConfReader {
 		confPath = PathUtil.combinePath(runDir, CONF);
 		File confile = new File(confPath);
 		if (!confile.exists()) {// 不存在使用默认配置
+			System.err.println(CONF + " is not found,sys will use default config");
 			confPath = URLDecoder.decode(ConfReader.class.getClassLoader().getResource(CONF).getPath(), "utf-8");
 		}
 
