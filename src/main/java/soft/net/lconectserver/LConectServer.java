@@ -311,7 +311,7 @@ public class LConectServer implements ISvrNet {
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-			log.info("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
+			log.debug("server network exception {}", ctx.channel().remoteAddress().toString(), cause);
 			closeConnect(ctx);
 		}
 
