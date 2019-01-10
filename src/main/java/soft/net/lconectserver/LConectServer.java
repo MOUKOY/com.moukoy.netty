@@ -60,9 +60,18 @@ public class LConectServer implements ISvrNet {
 	private EventLoopGroup workergroup;
 	private EventLoopGroup bossGroup;
 
-	private ServerConMap store = null;// 连接仓库
+	private ServerConMap conStore = null;// 连接仓库
 	private CountDownLatch latch = null;
 	private TdFixedPoolExcCenter threadSver = null;
+
+	/**
+	 * 获取网络连接库
+	 * 
+	 * @return
+	 */
+	public ServerConMap getConStore() {
+		return conStore;
+	}
 
 	/**
 	 * 网络服务端
@@ -76,7 +85,7 @@ public class LConectServer implements ISvrNet {
 		CongfigServer.init();
 		Conf.nettySetting(Conf.BUFFCHECKLEVEL);
 		initListeners();
-		this.store = new ServerConMap();
+		this.conStore = new ServerConMap();
 
 		// int processorsNumber = Runtime.getRuntime().availableProcessors();
 		this.svrbootstrap = new ServerBootstrap();// 引导辅助程序
@@ -189,7 +198,7 @@ public class LConectServer implements ISvrNet {
 	public void close() {
 		closed = true;
 		// 关闭所有连接
-		store.closeAllConnect();
+		conStore.closeAllConnect();
 
 		// 关闭每个通道
 		if (bossGroup != null)
@@ -202,7 +211,7 @@ public class LConectServer implements ISvrNet {
 	@Override
 	public void sendDataToAllClient(IBytesBuild data) throws Exception {
 		validate(data);
-		Collection<INetChanel> channels = store.getAllChanels();
+		Collection<INetChanel> channels = conStore.getAllChanels();
 		if (channels != null && !channels.isEmpty()) {
 			for (INetChanel ch : channels) {
 				ch.sendData(data);
@@ -213,7 +222,7 @@ public class LConectServer implements ISvrNet {
 	@Override
 	public void sendDataToAllClient(int localPort, IBytesBuild data) throws Exception {
 		validate(data);
-		Collection<INetChanel> channels = store.getAllChanels(localPort);
+		Collection<INetChanel> channels = conStore.getAllChanels(localPort);
 		if (channels != null && !channels.isEmpty()) {
 			for (INetChanel ch : channels) {
 				ch.sendData(data);
@@ -233,12 +242,12 @@ public class LConectServer implements ISvrNet {
 
 	@Override
 	public int getAllConnectNum(int localPort) {
-		return store.getConnectNum(localPort);
+		return conStore.getConnectNum(localPort);
 	}
 
 	@Override
 	public int getAllConnectNum() {
-		return store.getAllConectNum();
+		return conStore.getAllConectNum();
 	}
 
 	private static void validate(IBytesBuild data) throws Exception {
@@ -273,11 +282,11 @@ public class LConectServer implements ISvrNet {
 			boolean error = false;
 
 			try {
-				if (store.getAllConectNum() >= CongfigServer.MAXCLIENTS) {
+				if (conStore.getAllConectNum() >= CongfigServer.MAXCLIENTS) {
 					throw new ConectClientsFullException();
 				}
 				log.info("client has conected success:{}", listener.getNetSource().getRIpPort());
-				store.addChannel(listener.getNetSource());
+				conStore.addChannel(listener.getNetSource());
 				listener.chanelConect();
 			} catch (Exception e) {
 				error = true;
@@ -322,7 +331,7 @@ public class LConectServer implements ISvrNet {
 				if (!closed) {
 					closed = true;
 					log.info("client has disconected:{}", listener.getNetSource().getRIpPort());
-					store.removeChannel(listener.getNetSource());
+					conStore.removeChannel(listener.getNetSource());
 					listener.closeEvent();
 				}
 

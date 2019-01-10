@@ -17,7 +17,7 @@ import soft.net.ifs.INetChanel;
  * @author fanpei
  *
  */
-class ServerConMap {
+public class ServerConMap {
 
 	/**
 	 * String:本地监听端口 CusChannelStore:连接仓库
