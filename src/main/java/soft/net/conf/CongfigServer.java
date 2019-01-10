@@ -59,7 +59,7 @@ public class CongfigServer extends Conf {
 
 			case CONF_DATARECVINTERVAL:
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
-					CHANLEDATARECVINTERVAL = Integer.parseInt(v.getValue()) * 1000;
+					CHANLEDATARECVINTERVAL = Integer.parseInt(v.getValue());
 				}
 				break;
 
