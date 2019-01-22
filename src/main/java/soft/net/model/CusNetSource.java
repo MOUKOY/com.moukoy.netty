@@ -1,6 +1,8 @@
 package soft.net.model;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.netty.channel.Channel;
 import soft.net.SendDataUtil;
@@ -15,9 +17,11 @@ import soft.net.ifs.INetChanel;
  */
 public class CusNetSource implements INetChanel {
 	private Channel chanel;
+	private Map<String, Object> extraSettings;// 額外配置信息，初始容量3
 
 	public CusNetSource(Channel chanel) {
 		this.chanel = chanel;
+		this.extraSettings = new HashMap<String, Object>(3);
 	}
 
 	@Override
@@ -38,6 +42,11 @@ public class CusNetSource implements INetChanel {
 	@Override
 	public boolean sendData(byte[] datas) throws Exception {
 		return sendData(datas, false);
+	}
+
+	@Override
+	public Map<String, Object> getSettings() {
+		return extraSettings;
 	}
 
 	@Override

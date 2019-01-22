@@ -1,5 +1,7 @@
 package soft.net.ifs;
 
+import java.util.Map;
+
 import io.netty.channel.Channel;
 import soft.net.model.CusHostAndPort;
 
@@ -10,6 +12,13 @@ import soft.net.model.CusHostAndPort;
  *
  */
 public interface INetChanel extends ISendData {
+
+	/**
+	 * 获取连接配置用户自定义信息
+	 * 
+	 * @return
+	 */
+	public Map<String, Object> getSettings();
 
 	/**
 	 * 关闭连接
