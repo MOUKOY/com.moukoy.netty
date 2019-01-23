@@ -86,7 +86,6 @@ public class ClientCheckConTd implements Runnable {
 			@Override
 			public void operationComplete(Future<? super Void> future) throws Exception {
 				if (future.isSuccess()) {
-
 					chanel.updateChanel(f.channel());// 更新
 					log.info("与服务器{} :{} 重新连接建立成功...", ip, port);
 				} else {
