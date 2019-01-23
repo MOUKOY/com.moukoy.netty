@@ -20,20 +20,16 @@ import soft.net.model.ClientChanel;
 public class ClientCheckConTd implements Runnable {
 	private static final IWriteLog log = new Log4j2Writer(ClientCheckConTd.class);
 
-	private ClientChanel chanel;// 客户端信息
+	private ClientChanel clientChanel;// 客户端信息
 	private Bootstrap bstrap;
 	private String ip;
 	private int port;
-
 	private long lastHeatBeat = 0;
 
-	public ClientChanel getChanel() {
-		return chanel;
-	}
 
 	public ClientCheckConTd(Bootstrap bstrap, ClientChanel chanel, String ip, int port) {
 		this.bstrap = bstrap;
-		this.chanel = chanel;
+		this.clientChanel = chanel;
 		this.ip = ip;
 		this.port = port;
 	}
@@ -48,11 +44,11 @@ public class ClientCheckConTd implements Runnable {
 			Thread.currentThread().setName(reconectTdName);
 		}
 
-		if (!chanel.isRunFlag())
+		if (!clientChanel.isRunFlag())
 			return;
 		try {
-			if (!chanel.getListener().getNetSource().isConnected()) {
-				chanel.getListener().getNetSource().close();// 防止二次连接
+			if (!clientChanel.getListener().getNetSource().isConnected()) {
+				clientChanel.getListener().getNetSource().close();// 防止二次连接
 				reConnect();
 			} else if (System.currentTimeMillis() - lastHeatBeat > ConfigClient.HEARBEAT_INTERVAL) {
 				sendHeartBeat();
@@ -69,14 +65,14 @@ public class ClientCheckConTd implements Runnable {
 	 * 关闭连接
 	 */
 	public void closeConect() {
-		chanel.setRunFlag(false);
-		chanel.close();
+		clientChanel.setRunFlag(false);
+		clientChanel.close();
 	}
 
 	/**
 	 * 断线重连
 	 * 
-	 * @param chanel 客户端链路
+	 * @param clientChanel 客户端链路
 	 * @throws InterruptedException
 	 */
 	public void reConnect() throws InterruptedException {
@@ -86,7 +82,7 @@ public class ClientCheckConTd implements Runnable {
 			@Override
 			public void operationComplete(Future<? super Void> future) throws Exception {
 				if (future.isSuccess()) {
-					chanel.updateChanel(f.channel());// 更新
+					clientChanel.updateChanel(f.channel());// 更新
 					log.info("与服务器{} :{} 重新连接建立成功...", ip, port);
 				} else {
 					log.info("与服务器{} :{}重新连接失败...", ip, port);
@@ -104,9 +100,9 @@ public class ClientCheckConTd implements Runnable {
 	 */
 	private void sendHeartBeat() {
 		try {
-			chanel.sendData(SConectClient.getHeartData(), true);
+			clientChanel.sendData(SConectClient.getHeartData(), true);
 		} catch (Exception e) {
-			log.warn("心跳维持发送异常:{}", chanel.getListener().getNetSource().getRIpPort(), e);
+			log.warn("心跳维持发送异常:{}", clientChanel.getListener().getNetSource().getRIpPort(), e);
 		}
 	}
 }

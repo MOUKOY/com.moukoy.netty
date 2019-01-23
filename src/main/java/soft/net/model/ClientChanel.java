@@ -95,4 +95,15 @@ public class ClientChanel extends AChanelID {
 		listener.release();
 	}
 
+	/**
+	 * 是否已连接，可用
+	 * 
+	 * @return
+	 */
+	public boolean isConnected() {
+		if (listener == null || listener.getNetSource() == null)
+			return false;
+		else
+			return listener.getNetSource().isConnected();
+	}
 }
