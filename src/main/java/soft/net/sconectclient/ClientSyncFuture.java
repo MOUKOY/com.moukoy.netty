@@ -72,23 +72,28 @@ public class ClientSyncFuture implements GenericFutureListener<Future<? super Vo
 
 	@Override
 	public void operationComplete(Future<? super Void> future) throws Exception {
-		ChannelPipeline pipeline = f.channel().pipeline();
-		ClientHandler handler = (ClientHandler) pipeline.get(SConectClient.READERHANDLER);
-		ClientChanel clientChanel = new ClientChanel(handler.getListener());
-		if (keep) {// 长连接只建立一次
-			ClientCheckConTd tdThread = new ClientCheckConTd(bstrap, clientChanel, ip, port);
-			longConTdStore.excute(tdThread);
-		}
-		if (isend != null) {
-			isend.sendData(clientChanel);
+		ClientChanel clientChanel = null;
+		try {
+			ChannelPipeline pipeline = f.channel().pipeline();
+			ClientHandler handler = (ClientHandler) pipeline.get(SConectClient.READERHANDLER);
+			clientChanel = new ClientChanel(handler.getListener());
+			if (keep) {// 长连接只建立一次
+				ClientCheckConTd tdThread = new ClientCheckConTd(bstrap, clientChanel, ip, port);
+				longConTdStore.excute(tdThread);
+			}
+			if (isend != null) {
+				isend.sendData(clientChanel);
+			}
+
+			if (future.isSuccess()) {
+				log.info("与服务器{}:{} 连接建立成功...", ip, port);
+			} else {
+				log.info("与服务器{}:{} 连接建立失败...", ip, port);
+			}
+		} finally {
+			setResponse(clientChanel);
 		}
 
-		if (future.isSuccess()) {
-			log.info("与服务器{}:{} 连接建立成功...", ip, port);
-		} else {
-			log.info("与服务器{}:{} 连接建立失败...", ip, port);
-		}
-		setResponse(clientChanel);
 	}
 
 }
