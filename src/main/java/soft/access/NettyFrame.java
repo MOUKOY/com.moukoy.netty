@@ -16,14 +16,14 @@ public class NettyFrame {
 	 * @throws Exception
 	 */
 	public static void initSysArgs() throws Exception {
-
+		System.out.println("netty is start initing....");
 		// sdkcommon
 		moukoy.sdkcommon.SDKCommon.init();
 
 		// netty
 		ConfReader.init();
 
-		System.out.println("sdkcommon is inited success....");
+		System.out.println("netty is inited success....");
 	}
 
 }
