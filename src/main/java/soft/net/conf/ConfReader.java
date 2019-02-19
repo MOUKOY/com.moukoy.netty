@@ -27,7 +27,7 @@ public class ConfReader {
 	 * @throws OstypeMissWatchException
 	 */
 	public static void init() throws IOException, ConfException, OstypeMissWatchException, DataIsNullException {
-		String runDir = AppRunPathUitl.getRunPath(ConfReader.class);
+		String runDir = AppRunPathUitl.getAppRunPath();
 
 		confPath = PathUtil.combinePath(runDir, CONF);
 		File confile = new File(confPath);
