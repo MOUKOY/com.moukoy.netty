@@ -40,7 +40,10 @@ public class CongfigServer extends Conf {
 	 * work线程个数
 	 */
 	public static int CHILDGROUPTDCOUNT = 2;
-
+	/**
+	 * 转发服务器IP
+	 */
+	public static String FORWARDSERVERIP ="";
 	public static void init() throws ConfException, IOException {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);
 		if (values == null || values.isEmpty())
@@ -73,6 +76,12 @@ public class CongfigServer extends Conf {
 					CHILDGROUPTDCOUNT = Integer.parseInt(v.getValue());
 				}
 				break;
+			case CONF_FORWARDSERVERIP:
+				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
+					FORWARDSERVERIP = v.getValue();
+				}
+				break;
+				
 			default:
 				Conf.init(v);
 				break;

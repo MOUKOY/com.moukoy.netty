@@ -22,7 +22,8 @@ public abstract class Conf {
 	public static final String CONF_PARENTGROUPTDCOUNT = "parentgroupTdCount";
 	public static final String CONF_CHILDGROUPTDCOUNT = "childgroupTdCount";
 	public static final String CONF_BUFFCHECKLEVEL = "buffCheckLevel";
-
+	public static final String CONF_FORWARDSERVERIP = "forwardServerIp";
+	
 	public static ResourceLeakDetector.Level BUFFCHECKLEVEL = ResourceLeakDetector.Level.DISABLED;
 
 	public static List<IPAddrPackage> getHosts(String key, String values) throws ConfException {
