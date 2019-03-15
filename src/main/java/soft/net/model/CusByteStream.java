@@ -3,6 +3,7 @@ package soft.net.model;
 import soft.common.BConvrtUtil;
 import soft.common.StringUtil;
 import soft.net.ifs.IByteBuff;
+import soft.net.protocol.SrcBinaryHex;
 
 /**
  * 自定义具有指针移动的数据byte对象
@@ -129,5 +130,48 @@ public class CusByteStream implements IByteBuff {
 		}
 		return new byte[0];
 	}
+
+	// un implements begin
+	@Override
+	public byte readByte(SrcBinaryHex srcBH) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public short readShort(SrcBinaryHex srcBH) {
+		return 0;
+	}
+
+	@Override
+	public int readInt(SrcBinaryHex srcBH) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long readLong(SrcBinaryHex srcBH) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void readBytes(byte[] tmpBuff, SrcBinaryHex srcBH) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void readBytes(byte[] destBuff, int destPos, int destReadLen, SrcBinaryHex srcBH) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public byte[] readAllBytes(SrcBinaryHex srcBH) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	// un implements end
 
 }

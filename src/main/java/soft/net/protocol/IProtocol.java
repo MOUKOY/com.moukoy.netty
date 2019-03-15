@@ -30,7 +30,7 @@ public interface IProtocol extends IParse, IBytesBuild {
 	public int getTotalLen();
 
 	/**
-	 * 获取数据
+	 * 获取数据部分数据
 	 * 
 	 * @return
 	 */
@@ -100,6 +100,11 @@ public interface IProtocol extends IParse, IBytesBuild {
 	void parseHeaders();
 
 	/**
+	 * 获取解析完整对象的原始数据16进制形式[注意：只返回一次，第二次调用返回为空，数据被清除]
+	 */
+	String srcHex();
+
+	/**
 	 * 克隆副本
 	 * 
 	 * @return
@@ -117,12 +122,26 @@ public interface IProtocol extends IParse, IBytesBuild {
 	 * @return
 	 */
 	static int readStreamToArray(IByteBuff in, int totalLen, int hasReadLen, byte[] datas) {
+		return readStreamToArray(in, totalLen, hasReadLen, datas, null);
+	}
+
+	/**
+	 * 读取数据并返回已经读取数据大小
+	 * 
+	 * @param in
+	 * @param totalLen   该部分总数据长度
+	 * @param hasReadLen 已读取多少数据
+	 * @param datas      需要填充数据的目标源
+	 * @param srcBH      将读取的字节数据填充至srcBH
+	 * @return
+	 */
+	public static int readStreamToArray(IByteBuff in, int totalLen, int hasReadLen, byte[] datas, SrcBinaryHex srcBH) {
 		int tmphasReadLen = hasReadLen;
 		int buffLen = in.readableBytes();
 		if (buffLen > 0) {
 			int remainLength = totalLen - tmphasReadLen;
 			int needRead = cacRemainLen(buffLen, remainLength);
-			in.readBytes(datas, tmphasReadLen, needRead);
+			in.readBytes(datas, tmphasReadLen, needRead, srcBH);
 			tmphasReadLen += needRead;// 移动已读datas取数据长度
 		}
 		return tmphasReadLen;
