@@ -1,9 +1,10 @@
-package moukoy.com.netty.frame;
+package maoko.netty.frame;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import soft.net.lconectserver.LConectServer;
+import maoko.net.NettyFrame;
+import maoko.net.lconectserver.LConectServer;
 
 /**
  * 网络客户端程序
@@ -18,7 +19,7 @@ public class NetSvrApp {
 	@Before
 	public void before() {
 		try {
-			soft.access.NettyFrame.initSysArgs();
+			NettyFrame.initSysArgs();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

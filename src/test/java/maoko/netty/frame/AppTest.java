@@ -1,4 +1,4 @@
-package moukoy.com.netty.frame;
+package maoko.netty.frame;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
