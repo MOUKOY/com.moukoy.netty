@@ -3,8 +3,8 @@ package maoko.net.protocol;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import soft.common.log.IWriteLog;
-import soft.common.log.Log4j2Writer;
+import maoko.common.log.IWriteLog;
+import maoko.common.log.Log4j2Writer;
 import maoko.net.ifs.IByteBuff;
 import maoko.net.model.NetEventListener;
 

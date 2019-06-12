@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import io.netty.util.ResourceLeakDetector;
-import soft.common.StringUtil;
-import soft.common.conf.ConfException;
+import maoko.common.StringUtil;
+import maoko.common.conf.ConfException;
 
 /**
  * 配置文件基类
@@ -23,7 +23,7 @@ public abstract class Conf {
 	public static final String CONF_CHILDGROUPTDCOUNT = "childgroupTdCount";
 	public static final String CONF_BUFFCHECKLEVEL = "buffCheckLevel";
 	public static final String CONF_FORWARDSERVERIP = "forwardServerIp";
-	
+
 	public static ResourceLeakDetector.Level BUFFCHECKLEVEL = ResourceLeakDetector.Level.DISABLED;
 
 	public static List<IPAddrPackage> getHosts(String key, String values) throws ConfException {

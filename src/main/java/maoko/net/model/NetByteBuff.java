@@ -3,12 +3,10 @@ package maoko.net.model;
 import java.nio.ByteOrder;
 
 import io.netty.buffer.ByteBuf;
-import soft.common.StringUtil;
-import maoko.net.ifs.IByteBuff;
-import maoko.net.protocol.SrcBinaryHex;
+import maoko.common.StringUtil;
 import maoko.net.util.NetBuffRealse;
 
-public class NetByteBuff implements IByteBuff {
+public class NetByteBuff extends BuffPrintHex {
 
 	ByteBuf in;
 
@@ -113,62 +111,6 @@ public class NetByteBuff implements IByteBuff {
 		}
 
 		return hexStr;
-	}
-
-	@Override
-	public byte readByte(SrcBinaryHex srcBH) {
-		byte v = readByte();
-		if (srcBH != null)
-			srcBH.addByte(v);
-		return v;
-	}
-
-	@Override
-	public short readShort(SrcBinaryHex srcBH) {
-		short v = readShort();
-		if (srcBH != null)
-			srcBH.addShort(v);
-		return v;
-	}
-
-	@Override
-	public int readInt(SrcBinaryHex srcBH) {
-		int v = readShort();
-		if (srcBH != null)
-			srcBH.addInt(v);
-		return v;
-	}
-
-	@Override
-	public long readLong(SrcBinaryHex srcBH) {
-		long v = readLong();
-		if (srcBH != null)
-			srcBH.addLong(v);
-		return v;
-	}
-
-	@Override
-	public void readBytes(byte[] tmpBuff, SrcBinaryHex srcBH) {
-		readBytes(tmpBuff);
-		if (srcBH != null)
-			srcBH.addBytes(tmpBuff);
-	}
-
-	@Override
-	public void readBytes(byte[] destBuff, int destPos, int destReadLen, SrcBinaryHex srcBH) {
-		readBytes(destBuff, destPos, destReadLen);
-		byte[] v = new byte[destReadLen];
-		System.arraycopy(destBuff, destPos, v, 0, destReadLen);
-		if (srcBH != null)
-			srcBH.addBytes(v);
-	}
-
-	@Override
-	public byte[] readAllBytes(SrcBinaryHex srcBH) {
-		byte[] v = readAllBytes();
-		if (srcBH != null)
-			srcBH.addBytes(v);
-		return v;
 	}
 
 }

@@ -4,9 +4,9 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import soft.common.StringUtil;
-import soft.common.log.IWriteLog;
-import soft.common.log.Log4j2Writer;
+import maoko.common.StringUtil;
+import maoko.common.log.IWriteLog;
+import maoko.common.log.Log4j2Writer;
 import maoko.net.conf.ConfigClient;
 import maoko.net.model.ClientChanel;
 
@@ -25,7 +25,6 @@ public class ClientCheckConTd implements Runnable {
 	private String ip;
 	private int port;
 	private long lastHeatBeat = 0;
-
 
 	public ClientCheckConTd(Bootstrap bstrap, ClientChanel chanel, String ip, int port) {
 		this.bstrap = bstrap;

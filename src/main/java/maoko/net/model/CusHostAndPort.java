@@ -1,6 +1,6 @@
 package maoko.net.model;
 
-import soft.common.model.enm.EHostType;
+import maoko.common.model.enm.EHostType;
 
 /**
  *

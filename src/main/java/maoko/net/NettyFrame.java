@@ -1,6 +1,7 @@
 package maoko.net;
 
 import maoko.net.conf.ConfReader;
+import maoko.sdk.SDKCommon;
 
 /**
  * 网络框架启动入口
@@ -18,7 +19,7 @@ public class NettyFrame {
 	public static void initSysArgs() throws Exception {
 		System.out.println("netty is start initing....");
 		// sdkcommon
-		moukoy.sdkcommon.SDKCommon.init();
+		SDKCommon.init();
 
 		// netty
 		ConfReader.init();

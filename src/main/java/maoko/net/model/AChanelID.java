@@ -1,6 +1,6 @@
 package maoko.net.model;
 
-import soft.common.UUIDUtil;
+import maoko.common.UUIDUtil;
 
 /**
  * 链路ID

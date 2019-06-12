@@ -6,12 +6,12 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 
-import soft.common.conf.ConfException;
-import soft.common.exception.DataIsNullException;
-import soft.common.exception.OstypeMissWatchException;
-import soft.common.file.PathUtil;
-import soft.common.log.Log4j2Writer;
-import soft.common.system.AppRunPathUitl;
+import maoko.common.conf.ConfException;
+import maoko.common.exception.DataIsNullException;
+import maoko.common.exception.OstypeMissWatchException;
+import maoko.common.file.PathUtil;
+import maoko.common.log.Log4j2Writer;
+import maoko.common.system.AppRunPathUitl;
 
 public class ConfReader {
 	private static final String CONF = "config/net.properties";

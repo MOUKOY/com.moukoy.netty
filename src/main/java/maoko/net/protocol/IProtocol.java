@@ -1,6 +1,6 @@
 package maoko.net.protocol;
 
-import soft.common.exception.NotContainException;
+import maoko.common.exception.NotContainException;
 import maoko.net.exception.DecodeDataFailException;
 import maoko.net.ifs.IByteBuff;
 import maoko.net.ifs.IBytesBuild;

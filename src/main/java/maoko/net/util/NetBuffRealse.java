@@ -2,7 +2,7 @@ package maoko.net.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
-import soft.common.StaticClass;
+import maoko.common.StaticClass;
 
 /**
  * netty bytebuff 释放助手

@@ -8,8 +8,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import soft.common.log.IWriteLog;
-import soft.common.log.Log4j2Writer;
+import maoko.common.log.IWriteLog;
+import maoko.common.log.Log4j2Writer;
 import maoko.net.model.ClientChanel;
 
 public class ClientSyncFuture implements GenericFutureListener<Future<? super Void>> {

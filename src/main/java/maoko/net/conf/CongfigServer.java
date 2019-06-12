@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import soft.common.PropertiesUtil;
-import soft.common.StringUtil;
-import soft.common.conf.ConfException;
+import maoko.common.PropertiesUtil;
+import maoko.common.StringUtil;
+import maoko.common.conf.ConfException;
 
 /**
  * 服务端配置
@@ -43,7 +43,8 @@ public class CongfigServer extends Conf {
 	/**
 	 * 转发服务器IP
 	 */
-	public static String FORWARDSERVERIP ="";
+	public static String FORWARDSERVERIP = "";
+
 	public static void init() throws ConfException, IOException {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);
 		if (values == null || values.isEmpty())
@@ -81,7 +82,7 @@ public class CongfigServer extends Conf {
 					FORWARDSERVERIP = v.getValue();
 				}
 				break;
-				
+
 			default:
 				Conf.init(v);
 				break;

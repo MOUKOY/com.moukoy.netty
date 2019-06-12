@@ -1,9 +1,9 @@
 package maoko.net.model;
 
 import io.netty.channel.Channel;
-import soft.common.ExceptionUtil;
-import soft.common.log.IWriteLog;
-import soft.common.log.Log4j2Writer;
+import maoko.common.ExceptionUtil;
+import maoko.common.log.IWriteLog;
+import maoko.common.log.Log4j2Writer;
 import maoko.net.ifs.IBytesBuild;
 
 /**

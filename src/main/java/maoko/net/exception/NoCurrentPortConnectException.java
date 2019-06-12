@@ -1,6 +1,6 @@
 package maoko.net.exception;
 
-import soft.common.StringUtil;
+import maoko.common.StringUtil;
 
 /**
  * 没有当前本地端口绑定的连接

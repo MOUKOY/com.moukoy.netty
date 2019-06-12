@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import soft.common.PropertiesUtil;
-import soft.common.StringUtil;
-import soft.common.conf.ConfException;
+import maoko.common.PropertiesUtil;
+import maoko.common.StringUtil;
+import maoko.common.conf.ConfException;
 
 /**
  * 客户端配置文件
@@ -40,7 +40,6 @@ public class ConfigClient extends Conf {
 	 * 短连接接收数据最多等待时间
 	 */
 	public static final int SHORTCONECT_REVDATA_WAITTIMEOUT = 60 * 1000;
-
 
 	public static void init() throws ConfException, IOException {
 		Map<String, String> values = PropertiesUtil.getAllProperties(ConfReader.confPath);

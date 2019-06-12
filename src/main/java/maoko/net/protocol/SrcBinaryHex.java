@@ -1,6 +1,6 @@
 package maoko.net.protocol;
 
-import soft.common.StringUtil;
+import maoko.common.StringUtil;
 
 /**
  * 原始二进制数据十六进制助手

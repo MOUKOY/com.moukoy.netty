@@ -1,7 +1,7 @@
 package maoko.net.conf;
 
-import soft.common.StringUtil;
-import soft.common.conf.ConfException;
+import maoko.common.StringUtil;
+import maoko.common.conf.ConfException;
 import maoko.net.model.CusHostAndPort;
 
 public class IPAddrPackage {
