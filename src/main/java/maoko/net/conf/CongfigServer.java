@@ -21,6 +21,7 @@ public class CongfigServer extends Conf {
 	/**
 	 * 监听列表
 	 */
+	@Deprecated
 	public static List<IPAddrPackage> HOSTS;
 	/**
 	 * 最大客户端连接

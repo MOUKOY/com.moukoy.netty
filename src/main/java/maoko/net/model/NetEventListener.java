@@ -13,94 +13,97 @@ import maoko.net.protocol.MyDecoder;
 
 /**
  * 网络事件监视器
- * 
- * @author fanpei
  *
+ * @author fanpei
  */
 public abstract class NetEventListener implements EventListener, ISendData {
-	protected IDecoder decoder;
-	protected CusNetSource channel;// 连接链路
+    protected IDecoder decoder;
+    protected CusNetSource channel;// 连接链路
 
-	public NetEventListener(SocketChannel ch) {
-		super();
-		this.channel = new CusNetSource(ch);
-		this.decoder = new MyDecoder(this);
-	}
+    public NetEventListener() {
+    }
 
-	public CusNetSource getNetSource() {
-		return channel;
-	}
+    public NetEventListener(SocketChannel ch) {
+        super();
+        this.channel = new CusNetSource(ch);
+        this.decoder = new MyDecoder(this);
+    }
 
-	public void updateChanel(Channel ch) {
-		this.channel.setNettyChanel(ch);
-	}
+    public CusNetSource getNetSource() {
+        return channel;
+    }
 
-	public void release() {
-		if (checkChannel())
-			channel.close();
-	}
+    public void updateChanel(Channel ch) {
+        this.channel.setNettyChanel(ch);
+    }
 
-	/**
-	 * 网络连接建立
-	 */
-	public abstract void chanelConect();
+    public void release() {
+        if (checkChannel())
+            channel.close();
+    }
 
-	/**
-	 * 接收数据处理
-	 * 
-	 * @param buff
-	 */
-	public abstract void dataReciveEvent(IByteBuff buff);
+    /**
+     * 获取一个协议对象
+     *
+     * @return
+     */
+    public abstract IProtocol getProtocol();
 
-	/**
-	 * 连接断开
-	 */
-	public abstract void closeEvent();
+    /**
+     * 获取监听类型(字符串形式)
+     *
+     * @return
+     */
+    public abstract String getListenerTypeStr();
 
-	/**
-	 * 获取一个协议对象
-	 * 
-	 * @return
-	 */
-	public abstract IProtocol getProtocol();
+    /**
+     * 网络连接建立
+     */
+    public abstract void chanelConect();
 
-	/**
-	 * 获取监听类型(字符串形式)
-	 * 
-	 * @return
-	 */
-	public abstract String getListenerTypeStr();
+    /**
+     * 接收数据处理
+     *
+     * @param buff
+     */
+    public abstract void dataReciveEvent(IByteBuff buff);
 
-	@Override
-	public boolean sendData(byte[] datas) throws Exception {
-		if (checkChannel())
-			return channel.sendData(datas);
-		return false;
-	}
+    /**
+     * 连接断开
+     */
+    public abstract void closeEvent();
 
-	@Override
-	public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
-		if (checkChannel())
-			return channel.sendData(netdatas, isWait);
-		return false;
-	}
 
-	@Override
-	public boolean sendData(IBytesBuild data) throws Exception {
-		if (checkChannel())
-			return channel.sendData(data);
-		return false;
-	}
+    @Override
+    public boolean sendData(byte[] datas) throws Exception {
+        if (checkChannel())
+            return channel.sendData(datas);
+        return false;
+    }
 
-	@Override
-	public boolean sendData(IBytesBuild netdata, boolean isWait) throws Exception {
-		if (checkChannel())
-			return channel.sendData(netdata, isWait);
-		return false;
-	}
+    @Override
+    public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
+        if (checkChannel())
+            return channel.sendData(netdatas, isWait);
+        return false;
+    }
 
-	private boolean checkChannel() {
-		return channel != null;
-	}
+    @Override
+    public boolean sendData(IBytesBuild data) throws Exception {
+        if (checkChannel())
+            return channel.sendData(data);
+        return false;
+    }
+
+    @Override
+    public boolean sendData(IBytesBuild netdata, boolean isWait) throws Exception {
+        if (checkChannel())
+            return channel.sendData(netdata, isWait);
+        return false;
+    }
+
+    private boolean checkChannel() {
+        return channel != null;
+    }
 
 }

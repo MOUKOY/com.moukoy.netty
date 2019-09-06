@@ -5,25 +5,24 @@ import maoko.sdk.SDKCommon;
 
 /**
  * 网络框架启动入口
- *
  */
 public class NettyFrame {
-	// private static String RunPath;
+    // private static String RunPath;
 
-	/**
-	 * 初始化netty 框架参数
-	 *
-	 * @throws Exception
-	 */
-	public static void initSysArgs() throws Exception {
-		System.out.println("netty is start initing....");
-		// sdkcommon
-		SDKCommon.init();
+    /**
+     * 初始化netty 框架参数
+     *
+     * @throws Exception
+     */
+    public static void initSysArgs() throws Exception {
+        System.out.println("netty is start initing....");
+        // sdkcommon
+        SDKCommon.init();
 
-		// netty
-		ConfReader.init();
+        // netty
+        ConfReader.init();
 
-		System.out.println("netty is inited success....");
-	}
+        System.out.println("netty is inited success....");
+    }
 
 }

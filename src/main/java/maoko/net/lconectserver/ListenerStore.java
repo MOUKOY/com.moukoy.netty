@@ -1,25 +1,64 @@
 package maoko.net.lconectserver;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import maoko.net.conf.IPAddrCallback;
+import maoko.net.exception.IPCallbackNullException;
 import maoko.net.model.NetEventListener;
 
 /**
  * 监听器仓库
- * 
- * @author fanpei
  *
+ * @author fanpei
  */
 public class ListenerStore {
-	private Map<String, Class<NetEventListener>> listers = new HashMap<>();
+    private IPAddrCallback[] callbacks;
+    private Map<String, NetEventListener> listers;
 
-	public void add(String ipKey, Class<NetEventListener> clazz) {
-		listers.put(ipKey, clazz);
-	}
+    public ListenerStore(IPAddrCallback[] callbacks) throws Exception {
+        this.callbacks = callbacks;
+        listers = new HashMap<>();
+        for (int i = 0; i < callbacks.length; i++) {
+            IPAddrCallback IPAddrCallback = callbacks[i];
+            IPAddrCallback.validate();
+            listers.put(IPAddrCallback.getHost().getAddrStr(), IPAddrCallback.getListener());
+        }
+    }
 
-	public Class<NetEventListener> getListenerClass(String ipKey) {
-		return listers.get(ipKey);
-	}
+    @Deprecated
+    public void add(String ipKey, NetEventListener listener) {
+        listers.put(ipKey, listener);
+    }
+
+    public int size() {
+        return callbacks.length;
+    }
+
+    public IPAddrCallback getCallbackIndex(int index) {
+        return callbacks[index];
+    }
+
+    public NetEventListener getListener(String ipKey) {
+        return listers.get(ipKey);
+    }
+
+    public Collection<NetEventListener> listeners() {
+        return listers.values();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param callbacks
+     * @return
+     * @throws IPCallbackNullException
+     */
+    public static ListenerStore initListeners(IPAddrCallback[] callbacks) throws Exception {
+        if (callbacks == null || callbacks.length == 0)
+            throw new IPCallbackNullException();
+        return new ListenerStore(callbacks);
+    }
 
 }

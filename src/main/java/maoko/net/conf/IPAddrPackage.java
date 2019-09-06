@@ -3,9 +3,10 @@ package maoko.net.conf;
 import maoko.common.StringUtil;
 import maoko.common.conf.ConfException;
 import maoko.net.model.CusHostAndPort;
-
+@Deprecated
 public class IPAddrPackage {
 	private CusHostAndPort host;
+	@Deprecated
 	private String ListenerClassPath;// 监听类类路径
 
 	public CusHostAndPort getHost() {
