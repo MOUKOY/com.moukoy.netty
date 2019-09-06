@@ -12,8 +12,7 @@ public class NettyFrame {
 
 	/**
 	 * 初始化netty 框架参数
-	 * 
-	 * @param level 监控级别
+	 *
 	 * @throws Exception
 	 */
 	public static void initSysArgs() throws Exception {

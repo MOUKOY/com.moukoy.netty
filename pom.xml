@@ -29,9 +29,9 @@
 		</dependency>
 		<!-- my custom jar -->
 		<dependency>
-			<groupId>moukoy</groupId>
-			<artifactId>sdkcommon</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<groupId>maoko</groupId>
+			<artifactId>maoko.common</artifactId>
+			<version>0.0.2</version>
 		</dependency>
 
 	</dependencies>
