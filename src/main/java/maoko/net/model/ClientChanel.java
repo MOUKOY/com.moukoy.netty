@@ -34,7 +34,7 @@ public class ClientChanel extends AChanelID {
 	/**
 	 * 更新链路
 	 * 
-	 * @param source
+	 * @param ch
 	 */
 	public void updateChanel(Channel ch) {
 		this.listener.updateChanel(ch);
