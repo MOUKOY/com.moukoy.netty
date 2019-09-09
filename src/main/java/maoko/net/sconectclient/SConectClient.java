@@ -99,10 +99,10 @@ public class SConectClient implements IClientNet {
     }
 
     @Override
-    public ClientChanel connectServer(String ip, int port, int timeout) {
+    public ClientChanel connectServer(String ip, int port) {
         ClientChanel ch = null;
         try {
-            ch = buildConnect(ip, port, true, timeout, null);
+            ch = buildConnect(ip, port, true, null);
         } catch (Exception e) {
             log.warn("向[{}:{}]建立长连接发生错误", ip, port, e);
         }
@@ -122,9 +122,9 @@ public class SConectClient implements IClientNet {
     }
 
     @Override
-    public boolean sendDataToSvr(String ip, int port, IBytesBuild data, int timeout) throws Exception {
+    public boolean sendDataToSvr(String ip, int port, IBytesBuild data) throws Exception {
         try {
-            buildConnect(ip, port, false, timeout, new ClientSendDataImp(data));
+            buildConnect(ip, port, false, new ClientSendDataImp(data));
             return true;
         } catch (Exception e) {
             throw e;
@@ -156,16 +156,14 @@ public class SConectClient implements IClientNet {
     }
 
     /**
-     * @param outchanle 长连接时向外返回的channel
      * @param ip
      * @param port
      * @param keep      true 长连接 false 短连接
-     * @param timeout   建立连接超时时间
      * @param isend     发送数据操作 可为空
-     * @return
+     * @return 长连接时向外返回的channel
      * @throws Exception
      */
-    private ClientChanel buildConnect(String ip, int port, boolean keep, int timeout, IClientSendData isend)
+    private ClientChanel buildConnect(String ip, int port, boolean keep, IClientSendData isend)
             throws Exception {
         ChannelFuture f = bstrap.connect(ip, port);// 连接服务端
         // ClientConectMonitor monitor = new ClientConectMonitor();

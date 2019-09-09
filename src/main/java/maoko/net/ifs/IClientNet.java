@@ -24,10 +24,9 @@ public interface IClientNet {
 	 * 
 	 * @param ip
 	 * @param port
-	 * @param timeout 超时时间
 	 * @return
 	 */
-	ClientChanel connectServer(String ip, int port, int timeout);
+	ClientChanel connectServer(String ip, int port);
 
 	/**
 	 * 向服务端发送数据
@@ -35,10 +34,9 @@ public interface IClientNet {
 	 * @param ip
 	 * @param port
 	 * @param data
-	 * @param timeout 超时时间，单位毫秒
 	 * @throws Exception
 	 */
-	boolean sendDataToSvr(String ip, int port, IBytesBuild data, int timeout) throws Exception;
+	boolean sendDataToSvr(String ip, int port, IBytesBuild data) throws Exception;
 
 	/**
 	 * 指定的长连接发送数据
