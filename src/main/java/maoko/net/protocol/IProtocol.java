@@ -56,7 +56,7 @@ public interface IProtocol extends IParse, IBytesBuild {
 	 * 
 	 * @param in
 	 */
-	void readHeader(IByteBuff in) throws DecodeDataFailException;
+	void readHeader(IByteBuff in) throws Exception;
 
 	/**
 	 * 头是否读取完成
@@ -97,7 +97,7 @@ public interface IProtocol extends IParse, IBytesBuild {
 	 * 解析头（实例化数据）
 	 * 
 	 */
-	void parseHeaders();
+	void parseHeaders()throws Exception;
 
 	/**
 	 * 获取解析完整对象的原始数据16进制形式[注意：只返回一次，第二次调用返回为空，数据被清除]
