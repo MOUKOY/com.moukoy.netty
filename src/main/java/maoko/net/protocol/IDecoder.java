@@ -8,15 +8,13 @@ import maoko.net.ifs.IByteBuff;
  * @author fanpei
  *
  */
-public interface IDecoder {
+public interface IDecoder<Protocol extends IProtocol> {
 
 	/**
 	 * 解析数据
 	 * 
 	 * @param in
 	 *            数据流
-	 * @param creator
-	 *            网络协议创建器
 	 * 
 	 */
 	void deCode(IByteBuff in);
@@ -33,5 +31,5 @@ public interface IDecoder {
 	 * 
 	 * @return
 	 */
-	IProtocol popData();
+	Protocol popData();
 }

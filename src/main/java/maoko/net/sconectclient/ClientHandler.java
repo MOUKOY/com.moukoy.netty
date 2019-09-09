@@ -60,7 +60,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 		try {
 			if (in.isReadable()) {
 				IByteBuff inbuff = new NetByteBuff(in);
-				listener.dataReciveEvent(inbuff);
+				listener.decode(inbuff);
 			} else
 				throw new ReadbleException(listener.getNetSource().getRIpPort() + " can not readble");
 		} catch (Exception e) {

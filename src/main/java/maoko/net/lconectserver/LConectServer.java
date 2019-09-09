@@ -262,7 +262,7 @@ public class LConectServer implements ISvrNet {
                     in = (ByteBuf) obj;
                     if (in.isReadable()) {
                         IByteBuff inbuff = new NetByteBuff(in);
-                        listener.dataReciveEvent(inbuff);//
+                        listener.decode(inbuff);
                     } else
                         throw new ReadbleException(listener.getNetSource().getRIpPort() + " can not readble");
                 }

@@ -4,6 +4,8 @@ import java.util.EventListener;
 
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
+import maoko.common.log.IWriteLog;
+import maoko.common.log.Log4j2Writer;
 import maoko.net.ifs.IByteBuff;
 import maoko.net.ifs.IBytesBuild;
 import maoko.net.ifs.ISendData;
@@ -16,8 +18,10 @@ import maoko.net.protocol.MyDecoder;
  *
  * @author fanpei
  */
-public abstract class NetEventListener implements EventListener, ISendData {
-    protected IDecoder decoder;
+public abstract class NetEventListener<Protocol extends IProtocol> implements EventListener, ISendData {
+    private static final IWriteLog log = new Log4j2Writer(NetEventListener.class);
+
+    protected IDecoder<Protocol> decoder;
     protected CusNetSource channel;// 连接链路
 
     public NetEventListener() {
@@ -42,12 +46,23 @@ public abstract class NetEventListener implements EventListener, ISendData {
             channel.close();
     }
 
+    public void decode(IByteBuff in) {
+        log.debug("[REMOTE ADDR]:{}  RECV_DATA: {}", channel.getRIpPort(),
+                in.printHex());
+        decoder.deCode(in);
+        if (decoder.hasDecDatas()) {
+            Protocol protocol = null;
+            if ((protocol = decoder.popData()) != null)
+                dataReciveEvent(protocol);
+        }
+    }
+
     /**
      * 获取一个协议对象
      *
      * @return
      */
-    public abstract IProtocol getProtocol();
+    public abstract Protocol getProtocol();
 
     /**
      * 获取监听类型(字符串形式)
@@ -64,9 +79,9 @@ public abstract class NetEventListener implements EventListener, ISendData {
     /**
      * 接收数据处理
      *
-     * @param buff
+     * @param iprotocol
      */
-    public abstract void dataReciveEvent(IByteBuff buff);
+    public abstract void dataReciveEvent(Protocol iprotocol);
 
     /**
      * 连接断开
