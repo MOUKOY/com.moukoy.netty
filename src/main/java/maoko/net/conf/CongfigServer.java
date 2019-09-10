@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import maoko.common.PropertiesUtil;
 import maoko.common.StringUtil;
 import maoko.common.conf.ConfException;
+import maoko.net.model.CusHostAndPort;
 
 /**
  * 服务端配置
@@ -21,8 +22,7 @@ public class CongfigServer extends Conf {
 	/**
 	 * 监听列表
 	 */
-	@Deprecated
-	public static List<IPAddrPackage> HOSTS;
+	public static List<CusHostAndPort> HOSTS;
 	/**
 	 * 最大客户端连接
 	 */
@@ -53,9 +53,9 @@ public class CongfigServer extends Conf {
 
 		for (Entry<String, String> v : values.entrySet()) {
 			switch (v.getKey()) {
-			case CONF_SERVERIPS:
+		/*	case CONF_SERVERIPS:
 				HOSTS = getHosts(v.getKey(), v.getValue());
-				break;
+				break;*/
 			case CONF_MAXCLIENTS:
 				if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
 					MAXCLIENTS = Integer.parseInt(v.getValue());

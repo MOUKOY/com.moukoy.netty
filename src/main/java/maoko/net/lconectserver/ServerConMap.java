@@ -10,6 +10,7 @@ import maoko.net.conf.CongfigServer;
 import maoko.net.conf.IPAddrPackage;
 import maoko.net.exception.NoCurrentPortConnectException;
 import maoko.net.ifs.INetChanel;
+import maoko.net.model.CusHostAndPort;
 
 /**
  * 服务端连接映射总表
@@ -29,8 +30,8 @@ public class ServerConMap {
 			throw new DataIsNullException("server conf hosts is null");
 
 		chanelsMap = new HashMap<>(CongfigServer.HOSTS.size());
-		for (IPAddrPackage ipp : CongfigServer.HOSTS) {
-			ServerChannelStore ccs = new ServerChannelStore(ipp.getHost().getPort());
+		for (CusHostAndPort ipp : CongfigServer.HOSTS) {
+			ServerChannelStore ccs = new ServerChannelStore(ipp.getPort());
 			chanelsMap.put(ccs.getStoreId(), ccs);
 		}
 	}

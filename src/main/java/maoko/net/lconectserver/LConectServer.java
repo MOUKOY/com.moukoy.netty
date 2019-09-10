@@ -30,6 +30,7 @@ import maoko.net.model.NetEventListener;
 import maoko.net.util.NetBuffRealse;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
@@ -80,6 +81,7 @@ public class LConectServer implements ISvrNet {
         this.creator = creator;
 
         CongfigServer.init();
+        CongfigServer.HOSTS= Arrays.asList(hosts);
         Conf.nettySetting(Conf.BUFFCHECKLEVEL);
         this.conStore = new ServerConMap();
 
