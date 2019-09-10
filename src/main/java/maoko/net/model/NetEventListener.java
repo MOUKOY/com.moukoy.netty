@@ -26,8 +26,8 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
     protected ShortConectCallback<Protocol> callback;
     protected CusNetSource channel;// 连接链路
 
-    public NetEventListener() {
-    }
+/*    public NetEventListener() {
+    }*/
 
     public NetEventListener(SocketChannel ch) {
         super();

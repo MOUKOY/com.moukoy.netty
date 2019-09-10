@@ -11,6 +11,7 @@ import maoko.net.model.NetEventListener;
  * @author maoko
  * @date 2019/9/6 15:49
  */
+@Deprecated
 public class IPAddrCallback implements IValidate {
     private CusHostAndPort host;
     private NetEventListener listener;

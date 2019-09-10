@@ -13,6 +13,7 @@ import maoko.net.model.NetEventListener;
  *
  * @author fanpei
  */
+@Deprecated
 public class ListenerStore {
     private IPAddrCallback[] callbacks;
     private Map<String, NetEventListener> listers;

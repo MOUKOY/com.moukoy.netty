@@ -49,7 +49,7 @@ public class ClientCheckConTd implements Runnable {
                 clientChanel.getListener().getNetSource().close();// 防止二次连接
                 reConnect();
             }
-            if (SConectClient.getHeartData() != null) //== null 不重连
+            if (SConectClient.getHeartData() == null) //== null 不重连
             {
                 return;
             } else if (System.currentTimeMillis() - lastHeatBeat > ConfigClient.HEARBEAT_INTERVAL) {

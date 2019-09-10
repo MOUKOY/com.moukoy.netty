@@ -10,7 +10,7 @@ public class NettyFrame {
     // private static String RunPath;
 
     /**
-     * 初始化netty 框架参数
+     * 初始化netty 框架参数[客户端服务端必须都要先调用]
      *
      * @throws Exception
      */

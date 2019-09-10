@@ -23,10 +23,8 @@ import maoko.net.conf.IPAddrCallback;
 import maoko.net.exception.ConectClientsFullException;
 import maoko.net.exception.IPCallbackNullException;
 import maoko.net.exception.ReadbleException;
-import maoko.net.ifs.IByteBuff;
-import maoko.net.ifs.IBytesBuild;
-import maoko.net.ifs.INetChanel;
-import maoko.net.ifs.ISvrNet;
+import maoko.net.ifs.*;
+import maoko.net.model.CusHostAndPort;
 import maoko.net.model.NetByteBuff;
 import maoko.net.model.NetEventListener;
 import maoko.net.util.NetBuffRealse;
@@ -42,9 +40,10 @@ import java.util.concurrent.CountDownLatch;
  */
 public class LConectServer implements ISvrNet {
     private static final IWriteLog log = new Log4j2Writer(LConectServer.class);
-    private ListenerStore listers = null;
+    // private ListenerStore listers = null;
 
-    // private IListenerCreator creator = null;
+    private IListenerCreator creator = null;
+    private CusHostAndPort[] hosts = null;
     private ServerBootstrap svrbootstrap;
     private EventLoopGroup workergroup;
     private EventLoopGroup bossGroup;
@@ -52,6 +51,7 @@ public class LConectServer implements ISvrNet {
     private ServerConMap conStore = null;// 连接仓库
     private CountDownLatch latch = null;
     private TdFixedPoolExcCenter threadSver = null;
+
 
     /**
      * 获取网络连接库
@@ -62,17 +62,23 @@ public class LConectServer implements ISvrNet {
         return conStore;
     }
 
+
     /**
      * 网络服务端【初始化并注册】
      *
-     * @param callbacks ip和监听数组
+     * @param hosts ip数组
      * @throws ConfException
      * @throws IOException
      * @throws LoadReflectException
      * @throws DataIsNullException
      */
-    public LConectServer(IPAddrCallback[] callbacks) throws Exception {
-        listers = ListenerStore.initListeners(callbacks);
+    public LConectServer(CusHostAndPort[] hosts, IListenerCreator creator) throws Exception {
+        //listers = ListenerStore.initListeners(callbacks);
+        this.hosts = hosts;
+        if (creator == null)
+            throw new DataIsNullException("the creator is null");
+        this.creator = creator;
+
         CongfigServer.init();
         Conf.nettySetting(Conf.BUFFCHECKLEVEL);
         this.conStore = new ServerConMap();
@@ -111,7 +117,8 @@ public class LConectServer implements ISvrNet {
                     return;
                 }
                 //Class<NetEventListener> clazz = listers.getListenerClass(ch.localAddress().toString().replaceAll("/", ""));
-                NetEventListener listener = listers.getListener(ch.localAddress().toString().replaceAll("/", ""));
+                // NetEventListener listener = listers.getListener(ch.localAddress().toString().replaceAll("/", ""));
+                NetEventListener listener = creator.getListener(ch);
                 LConectServerHandler shEchoServerHandler = new LConectServerHandler(listener);
                 if (CongfigServer.CHANLEDATARECVINTERVAL > 0)
                     ch.pipeline().addLast(new ReadTimeoutHandler(CongfigServer.CHANLEDATARECVINTERVAL));// 未收到数据间隔断开
@@ -127,12 +134,12 @@ public class LConectServer implements ISvrNet {
     @Override
     public void start() throws Exception {
         try {
-            int ipCount = listers.size();
+            int ipCount = hosts.length;
             latch = new CountDownLatch(ipCount);
             threadSver = new TdFixedPoolExcCenter(ipCount);
-            for (int i = 0; i < listers.size(); i++) {
-                IPAddrCallback ipAddrCallback = listers.getCallbackIndex(i);
-                PortInstance pi = new PortInstance(latch, ipAddrCallback.getHost().getIP(), ipAddrCallback.getHost().getPort());
+            for (int i = 0; i < ipCount; i++) {
+                CusHostAndPort address = hosts[i];
+                PortInstance pi = new PortInstance(latch, address.getIP(), address.getPort());
                 threadSver.execute(pi);
             }
             latch.await();

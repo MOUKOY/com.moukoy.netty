@@ -19,8 +19,7 @@ public class ConfReader {
 
 	/**
 	 * 配置文件初始化
-	 * 
-	 * @param runDir 运行根目录
+	 *
 	 * @throws IOException
 	 * @throws ConfException
 	 * @throws DataIsNullException

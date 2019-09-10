@@ -30,11 +30,11 @@ public class SConectClient implements IClientNet {
 
     private static final IWriteLog log = new Log4j2Writer(SConectClient.class);
 
-    private static IListenerCreator creator = null;
+    private IListenerCreator creator = null;
     /**
      * 心跳包数据
      */
-    protected static IBytesBuild heartData;// 客户端检测服务端是否断开用
+    private static IBytesBuild heartData;// 客户端检测服务端是否断开用
 
     public static IBytesBuild getHeartData() {
         return heartData;
@@ -47,40 +47,19 @@ public class SConectClient implements IClientNet {
     private ClientChannelStore store;
     private ClientChanel currentChanel = null;
 
-    /**
-     * 初始化
-     *
-     * @param creator
-     * @throws DataIsNullException
-     * @throws IOException
-     * @throws ConfException
-     */
-    public static void init(IListenerCreator creator)
-            throws DataIsNullException, ConfException, IOException {
+
+    public SConectClient(IListenerCreator creator) throws ConfException, IOException, DataIsNullException {
+
         if (creator == null)
             throw new DataIsNullException("the creator is null");
-
-        SConectClient.creator = creator;
+        this.creator = creator;
         ConfigClient.init();
         Conf.nettySetting(Conf.BUFFCHECKLEVEL);
-    }
-
-    /**
-     * 设置心跳数据，设置后重连检测会定时发送此数据到服务端，若不设置心跳数据，则不进行发送。此心跳数据指的是业务心跳数据
-     *
-     * @param heartData
-     * @throws DataIsNullException
-     */
-    public static void setHeartData(IBytesBuild heartData) throws DataIsNullException {
-        if (heartData == null)
-            throw new DataIsNullException("the heartdata is null");
-        SConectClient.heartData = heartData;
-    }
-
-    public SConectClient() {
-        System.setProperty("io.netty.leakDetection.maxRecords", "100");
-        System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
-        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
+        //************************************************** 测试代码
+        // System.setProperty("io.netty.leakDetection.maxRecords", "100");
+        // System.setProperty("io.netty.leakDetection.acquireAndReleaseOnly", "true");
+        // ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);// 测试级别
+        //**************************************************
 
         store = new ClientChannelStore();
         // connectPool = new TdCachePoolExctor();// 执行重连
@@ -97,6 +76,18 @@ public class SConectClient implements IClientNet {
         bstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
         bstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         bstrap.handler(new MyClientInittializer());
+    }
+
+    /**
+     * 设置心跳数据，设置后重连检测会定时发送此数据到服务端，若不设置心跳数据，则不进行发送。此心跳数据指的是业务心跳数据
+     *
+     * @param heartData
+     * @throws DataIsNullException
+     */
+    public static void setHeartData(IBytesBuild heartData) throws DataIsNullException {
+        if (heartData == null)
+            throw new DataIsNullException("the heartdata is null");
+        SConectClient.heartData = heartData;
     }
 
     @Override
