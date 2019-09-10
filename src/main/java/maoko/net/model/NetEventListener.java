@@ -12,6 +12,7 @@ import maoko.net.ifs.ISendData;
 import maoko.net.protocol.IDecoder;
 import maoko.net.protocol.IProtocol;
 import maoko.net.protocol.MyDecoder;
+import maoko.net.sconectclient.ShortConectCallback;
 
 /**
  * 网络事件监视器
@@ -22,6 +23,7 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
     private static final IWriteLog log = new Log4j2Writer(NetEventListener.class);
 
     protected IDecoder<Protocol> decoder;
+    protected ShortConectCallback<Protocol> callback;
     protected CusNetSource channel;// 连接链路
 
     public NetEventListener() {
@@ -33,13 +35,18 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
         this.decoder = new MyDecoder(this);
     }
 
+    public void updateChanel(Channel ch) {
+        this.channel.setNettyChanel(ch);
+    }
+
+    public void setCallback(ShortConectCallback callback) {
+        this.callback = callback;
+    }
+
     public CusNetSource getNetSource() {
         return channel;
     }
 
-    public void updateChanel(Channel ch) {
-        this.channel.setNettyChanel(ch);
-    }
 
     public void release() {
         if (checkChannel())
@@ -52,8 +59,12 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
         decoder.deCode(in);
         if (decoder.hasDecDatas()) {
             Protocol protocol = null;
-            if ((protocol = decoder.popData()) != null)
-                dataReciveEvent(protocol);
+            if ((protocol = decoder.popData()) != null) {
+                if (null != callback)
+                    callback.dataReciveEvent(protocol);
+                else
+                    dataReciveEvent(protocol);
+            }
         }
     }
 

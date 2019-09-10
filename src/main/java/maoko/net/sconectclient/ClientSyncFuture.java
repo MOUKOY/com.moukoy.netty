@@ -38,7 +38,15 @@ public class ClientSyncFuture implements GenericFutureListener<Future<? super Vo
 		this.longConTdStore = longConTdStore;
 		this.isend = isend;
 	}
-
+	public ClientSyncFuture(String ip, int port, boolean keep, Bootstrap bstrap, ChannelFuture f,
+							ClientCheckConTdStore longConTdStore) {
+		this.ip = ip;
+		this.port = port;
+		this.keep = keep;
+		this.bstrap = bstrap;
+		this.f = f;
+		this.longConTdStore = longConTdStore;
+	}
 	/**
 	 * 直到有结果才返回。
 	 * 

@@ -3,6 +3,7 @@ package maoko.net.sconectclient;
 import maoko.net.ifs.IBytesBuild;
 import maoko.net.model.ClientChanel;
 
+@Deprecated
 public class ClientSendDataImp implements IClientSendData {
 
 	IBytesBuild data;

@@ -45,6 +45,7 @@ public class SConectClient implements IClientNet {
     private EventLoopGroup workgroup;
     private Bootstrap bstrap;
     private ClientChannelStore store;
+    private ClientChanel currentChanel = null;
 
     /**
      * 初始化
@@ -99,19 +100,21 @@ public class SConectClient implements IClientNet {
     }
 
     @Override
-    public ClientChanel connectServer(String ip, int port) {
+    public void connectServer(String ip, int port) {
         ClientChanel ch = null;
         try {
             ch = buildConnect(ip, port, true, null);
+            currentChanel = ch;
         } catch (Exception e) {
             log.warn("向[{}:{}]建立长连接发生错误", ip, port, e);
         }
-        return ch;
     }
 
     @Override
     public void close() {
         try {
+            //if (currentChanel!=null)
+            //currentChanel.close();
             longConTdStore.shutdownNow();
             // 循环遍历关闭所有长连接
             store.closeAllConnect();
@@ -122,19 +125,28 @@ public class SConectClient implements IClientNet {
     }
 
     @Override
-    public boolean sendDataToSvr(String ip, int port, IBytesBuild data) throws Exception {
-        try {
-            buildConnect(ip, port, false, new ClientSendDataImp(data));
-            return true;
-        } catch (Exception e) {
-            throw e;
-        }
+    public boolean sendDataToSvr(IBytesBuild data) throws Exception {
+        if (currentChanel == null)
+            throw new DataIsNullException("长连接建立失败，连接为空");
+        return currentChanel.getListener().sendData(data);
     }
 
     @Override
-    public boolean sendDataToSvr(NetEventListener listener, IBytesBuild data) throws Exception {
-        return listener.sendData(data);
+    public boolean sendDataToSvr(String ip, int port, IBytesBuild data, ShortConectCallback callback) throws Exception {
+        ClientChanel ch = null;
+        try {
+            ch = buildConnect(ip, port);
+            ch.getListener().setCallback(callback);
+            ch.sendData(data.buildBytes());
+            return true;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (ch != null)
+                ch.close();
+        }
     }
+
 
     public static final String READERHANDLER = "readerHandler";
 
@@ -158,8 +170,8 @@ public class SConectClient implements IClientNet {
     /**
      * @param ip
      * @param port
-     * @param keep      true 长连接 false 短连接
-     * @param isend     发送数据操作 可为空
+     * @param keep  true 长连接 false 短连接
+     * @param isend 发送数据操作 可为空
      * @return 长连接时向外返回的channel
      * @throws Exception
      */
@@ -167,13 +179,35 @@ public class SConectClient implements IClientNet {
             throws Exception {
         ChannelFuture f = bstrap.connect(ip, port);// 连接服务端
         // ClientConectMonitor monitor = new ClientConectMonitor();
-        ClientSyncFuture clFuture = new ClientSyncFuture(ip, port, keep, bstrap, f, longConTdStore, isend);
+        ClientSyncFuture clFuture = new ClientSyncFuture(ip, port, keep, bstrap, f, longConTdStore);
         f.addListener(clFuture);
         f.await();
         final ClientChanel outchanle = clFuture.syncwait();
         // monitor.connectWait(timeout);
 
         if (!f.isSuccess() && !keep)// 短连接抛出异常
+            throw new ConectSeverException("建立连接超时,请检查网络连接或服务是否开启", f.cause());
+        return outchanle;
+    }
+
+    /**
+     * 短连接建立
+     *
+     * @param ip
+     * @param port
+     * @return
+     * @throws Exception
+     */
+    private ClientChanel buildConnect(String ip, int port)
+            throws Exception {
+        ChannelFuture f = bstrap.connect(ip, port);// 连接服务端
+        // ClientConectMonitor monitor = new ClientConectMonitor();
+        ClientSyncFuture clFuture = new ClientSyncFuture(ip, port, false, bstrap, f, longConTdStore);
+        f.addListener(clFuture);
+        f.await();
+        final ClientChanel outchanle = clFuture.syncwait();
+        // monitor.connectWait(timeout);
+        if (!f.isSuccess())// 短连接抛出异常
             throw new ConectSeverException("建立连接超时,请检查网络连接或服务是否开启", f.cause());
         return outchanle;
     }
