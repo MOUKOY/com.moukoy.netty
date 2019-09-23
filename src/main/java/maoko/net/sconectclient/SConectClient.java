@@ -96,6 +96,7 @@ public class SConectClient implements IClientNet {
         try {
             ch = buildConnect(ip, port, true, null);
             currentChanel = ch;
+            Thread.sleep(2000);
         } catch (Exception e) {
             log.warn("向[{}:{}]建立长连接发生错误", ip, port, e);
         }

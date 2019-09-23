@@ -24,7 +24,7 @@ import org.junit.Test;
 public class SConClientTest {
     private SConectClient client;
 
-    @Before
+    //@Before
     public void before() {
         try {
             NettyFrame.initSysArgs();
@@ -34,10 +34,23 @@ public class SConClientTest {
         }
     }
 
-    @Test
+    //@Test
     public void start() {
         try {
             client = new SConectClient(new MyCreator());
+            client.connectServer("127.0.0.1", 8888);
+            Thread.sleep(100000);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            NettyFrame.initSysArgs();
+            SConectClient client = new SConectClient(new MyCreator());
             client.connectServer("127.0.0.1", 8888);
             Thread.sleep(100000);
         } catch (Exception e) {
