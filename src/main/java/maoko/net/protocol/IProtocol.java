@@ -20,28 +20,28 @@ public interface IProtocol extends IParse, IBytesBuild {
 	 * @return
 	 * @throws NotContainException 设备ID未初始化,协议不包含设备ID
 	 */
-	public int getDeviceID() throws NotContainException;
+	 int getDeviceID() throws NotContainException;
 
 	/**
 	 * 获取协议数据总长度【byte[]协议流总长度，不代表Datas和Childdatas数据之和】
 	 * 
 	 * @return
 	 */
-	public int getTotalLen();
+	 int getTotalLen();
 
 	/**
 	 * 获取数据部分数据
 	 * 
 	 * @return
 	 */
-	public byte[] getDatas();
+	 byte[] getDatas();
 
 	/**
 	 * 获取子功能数据
 	 * 
 	 * @return
 	 */
-	public byte[] getChilddatas();
+	 byte[] getChilddatas();
 
 	/**
 	 * 校验数据
