@@ -38,7 +38,6 @@ public class ClientCheckConTd implements Runnable {
     public void run() {
 
         if (StringUtil.isStringNull(reconectTdName)) {
-            Thread.currentThread().setDaemon(true);
             reconectTdName = "客户端重连检测 ";
             Thread.currentThread().setName(reconectTdName);
         }
