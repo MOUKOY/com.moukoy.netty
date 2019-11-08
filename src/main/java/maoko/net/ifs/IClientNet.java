@@ -49,4 +49,5 @@ public interface IClientNet {
     boolean sendDataToSvr(String ip, int port, IBytesBuild data, ShortConectCallback callback) throws Exception;
 
 
+    boolean isConected();
 }

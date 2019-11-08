@@ -139,6 +139,13 @@ public class SConectClient implements IClientNet {
         }
     }
 
+    @Override
+    public boolean isConected() {
+        if (currentChanel != null) {
+            return currentChanel.isConnected();
+        }
+        return false;
+    }
 
     public static final String READERHANDLER = "readerHandler";
 
