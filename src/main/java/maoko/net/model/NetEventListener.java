@@ -7,6 +7,7 @@ import io.netty.channel.socket.SocketChannel;
 import maoko.common.log.IWriteLog;
 import maoko.common.log.Log4j2Writer;
 import maoko.common.tdPool.TdFixedPoolExcCenter;
+import maoko.net.conf.Conf;
 import maoko.net.conf.CongfigServer;
 import maoko.net.ifs.IByteBuff;
 import maoko.net.ifs.IBytesBuild;
@@ -23,7 +24,7 @@ import maoko.net.sconectclient.ShortConectCallback;
  */
 public abstract class NetEventListener<Protocol extends IProtocol> implements EventListener, ISendData {
     private static final IWriteLog log = new Log4j2Writer(NetEventListener.class);
-    private static final TdFixedPoolExcCenter TD_FIXED_POOL_EXC_CENTER = new TdFixedPoolExcCenter(CongfigServer.RECVHANDLETDCOUNT);
+    private static final TdFixedPoolExcCenter TD_FIXED_POOL_EXC_CENTER = new TdFixedPoolExcCenter(Conf.RECVHANDLETDCOUNT);
     protected IDecoder<Protocol> decoder;
     protected ShortConectCallback<Protocol> callback;
     protected CusNetSource channel;// 连接链路
