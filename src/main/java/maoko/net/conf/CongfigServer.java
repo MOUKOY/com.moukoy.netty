@@ -40,10 +40,7 @@ public class CongfigServer extends Conf {
      * work线程个数
      */
     public static int CHILDGROUPTDCOUNT = 2;
-    /**
-     * 接收数据线程处理个数
-     */
-    public static int RECVHANDLETDCOUNT = 2;
+
     /**
      * 转发服务器IP
      */
@@ -74,11 +71,6 @@ public class CongfigServer extends Conf {
                 case CONF_PARENTGROUPTDCOUNT:
                     if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
                         PARENTGROUPTDCOUNT = Integer.parseInt(v.getValue());
-                    }
-                    break;
-                case CONF_DATARECIVETDCOUNT:
-                    if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
-                        RECVHANDLETDCOUNT = Integer.parseInt(v.getValue());
                     }
                     break;
 

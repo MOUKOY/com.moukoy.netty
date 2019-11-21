@@ -26,6 +26,10 @@ public abstract class Conf {
     public static final String CONF_FORWARDSERVERIP = "forwardServerIp";
 
     public static ResourceLeakDetector.Level BUFFCHECKLEVEL = ResourceLeakDetector.Level.DISABLED;
+    /**
+     * 接收数据线程处理个数
+     */
+    public static int RECVHANDLETDCOUNT = 2;
 
     public static List<IPAddrPackage> getHosts(String key, String values) throws ConfException {
         List<IPAddrPackage> hosts = null;
@@ -50,10 +54,18 @@ public abstract class Conf {
      * @param v
      */
     public static void init(Entry<String, String> v) {
-        if (CONF_BUFFCHECKLEVEL.equals(v.getKey()))
-            if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
-                BUFFCHECKLEVEL = ResourceLeakDetector.Level.valueOf(v.getValue());
-            }
+        switch (v.getKey()) {
+            case CONF_BUFFCHECKLEVEL:
+                if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
+                    BUFFCHECKLEVEL = ResourceLeakDetector.Level.valueOf(v.getValue());
+                }
+                break;
+            case CONF_DATARECIVETDCOUNT:
+                if (!StringUtil.isStrNullOrWhiteSpace(v.getValue())) {
+                    RECVHANDLETDCOUNT = Integer.parseInt(v.getValue());
+                }
+                break;
+        }
     }
 
     /**
