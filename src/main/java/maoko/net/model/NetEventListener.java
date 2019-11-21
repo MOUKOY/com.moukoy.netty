@@ -6,6 +6,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import maoko.common.log.IWriteLog;
 import maoko.common.log.Log4j2Writer;
+import maoko.common.tdPool.TdFixedPoolExcCenter;
+import maoko.net.conf.CongfigServer;
 import maoko.net.ifs.IByteBuff;
 import maoko.net.ifs.IBytesBuild;
 import maoko.net.ifs.ISendData;
@@ -21,7 +23,7 @@ import maoko.net.sconectclient.ShortConectCallback;
  */
 public abstract class NetEventListener<Protocol extends IProtocol> implements EventListener, ISendData {
     private static final IWriteLog log = new Log4j2Writer(NetEventListener.class);
-
+    private static final TdFixedPoolExcCenter TD_FIXED_POOL_EXC_CENTER = new TdFixedPoolExcCenter(CongfigServer.RECVHANDLETDCOUNT);
     protected IDecoder<Protocol> decoder;
     protected ShortConectCallback<Protocol> callback;
     protected CusNetSource channel;// 连接链路
@@ -57,15 +59,28 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
         log.debug("[REMOTE ADDR]:{}  RECV_DATA: {}", channel.getRIpPort(),
                 in.printHex());
         decoder.deCode(in);
-        if (decoder.hasDecDatas()) {
-            Protocol protocol = null;
-            if ((protocol = decoder.popData()) != null) {
-                if (null != callback)
-                    callback.dataReciveEvent(protocol);
-                else
-                    dataReciveEvent(protocol);
+        TD_FIXED_POOL_EXC_CENTER.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (decoder.hasDecDatas()) {
+                        Protocol protocol = null;
+                        //fanpei 2019.11.21重大更新
+                        //接收数据处理逻辑每次只取一个数据，导致数据堆积问题;
+                        // 将if（取数据不为空）改为while(取数据不为空)
+                        while ((protocol = decoder.popData()) != null) {
+                            if (null != callback)
+                                callback.dataReciveEvent(protocol);
+                            else
+                                dataReciveEvent(protocol);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("出数据队列发生错误", e);
+                }
             }
-        }
+        });
+
     }
 
     /**

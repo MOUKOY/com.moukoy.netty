@@ -21,6 +21,7 @@ public abstract class Conf {
     public static final String CONF_DATARECVINTERVAL = "dataRecvInterval";
     public static final String CONF_PARENTGROUPTDCOUNT = "parentgroupTdCount";
     public static final String CONF_CHILDGROUPTDCOUNT = "childgroupTdCount";
+    public static final String CONF_DATARECIVETDCOUNT = "recvHandleTdCount";
     public static final String CONF_BUFFCHECKLEVEL = "buffCheckLevel";
     public static final String CONF_FORWARDSERVERIP = "forwardServerIp";
 
