@@ -24,7 +24,7 @@ import maoko.net.sconectclient.ShortConectCallback;
  */
 public abstract class NetEventListener<Protocol extends IProtocol> implements EventListener, ISendData {
     private static final IWriteLog log = new Log4j2Writer(NetEventListener.class);
-    private static final TdFixedPoolExcCenter TD_FIXED_POOL_EXC_CENTER = new TdFixedPoolExcCenter(Conf.RECVHANDLETDCOUNT);
+    protected static final TdFixedPoolExcCenter TD_FIXED_POOL_EXC_CENTER = new TdFixedPoolExcCenter(Conf.RECVHANDLETDCOUNT);
     protected IDecoder<Protocol> decoder;
     protected ShortConectCallback<Protocol> callback;
     protected CusNetSource channel;// 连接链路
