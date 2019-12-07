@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import maoko.common.PropertiesUtil;
 import maoko.common.StringUtil;
 import maoko.common.conf.ConfException;
-import maoko.net.model.CusHostAndPort;
+import maoko.common.model.net.CusHostAndPort;
 
 /**
  * 服务端配置

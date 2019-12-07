@@ -3,7 +3,7 @@ package maoko.net.ifs;
 import java.util.Map;
 
 import io.netty.channel.Channel;
-import maoko.net.model.CusHostAndPort;
+import maoko.common.model.net.CusHostAndPort;
 
 /**
  * 网络链路接口

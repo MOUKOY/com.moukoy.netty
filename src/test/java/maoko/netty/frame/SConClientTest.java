@@ -3,18 +3,11 @@ package maoko.netty.frame;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import maoko.MyProtocol;
-import maoko.common.exception.NotContainException;
 import maoko.net.NettyFrame;
-import maoko.net.conf.IPAddrCallback;
-import maoko.net.ifs.IByteBuff;
 import maoko.net.ifs.IListenerCreator;
-import maoko.net.lconectserver.LConectServer;
-import maoko.net.model.CusHostAndPort;
 import maoko.net.model.NetEventListener;
 import maoko.net.protocol.IProtocol;
 import maoko.net.sconectclient.SConectClient;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * 网络客户端程序

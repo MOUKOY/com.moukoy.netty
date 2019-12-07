@@ -1,8 +1,8 @@
 package maoko.net.conf;
 
 import maoko.common.exception.DataIsNullException;
+import maoko.common.model.net.CusHostAndPort;
 import maoko.net.ifs.IValidate;
-import maoko.net.model.CusHostAndPort;
 import maoko.net.model.NetEventListener;
 
 /**

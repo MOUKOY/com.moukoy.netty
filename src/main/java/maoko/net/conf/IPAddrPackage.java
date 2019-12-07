@@ -2,7 +2,8 @@ package maoko.net.conf;
 
 import maoko.common.StringUtil;
 import maoko.common.conf.ConfException;
-import maoko.net.model.CusHostAndPort;
+import maoko.common.model.net.CusHostAndPort;
+
 @Deprecated
 public class IPAddrPackage {
 	private CusHostAndPort host;
