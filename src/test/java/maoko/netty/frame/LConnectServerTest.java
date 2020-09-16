@@ -3,6 +3,7 @@ package maoko.netty.frame;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import maoko.MyProtocol;
+import maoko.common.model.net.CusHostAndPort;
 import maoko.net.ifs.IListenerCreator;
 import maoko.net.model.NetEventListener;
 import org.junit.Before;
