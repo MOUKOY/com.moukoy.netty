@@ -27,7 +27,8 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
     protected static final TdFixedPoolExcCenter TD_FIXED_POOL_EXC_CENTER = new TdFixedPoolExcCenter(Conf.RECVHANDLETDCOUNT);
     protected IDecoder<Protocol> decoder;
     protected ShortConectCallback<Protocol> callback;
-    protected CusNetSource channel;// 连接链路
+    // 连接链路
+    protected CusNetSource channel;
 
 /*    public NetEventListener() {
     }*/
@@ -52,8 +53,9 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
 
 
     public void release() {
-        if (checkChannel())
+        if (checkChannel()) {
             channel.close();
+        }
     }
 
     public void decode(IByteBuff in) {
@@ -70,10 +72,11 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
                         //接收数据处理逻辑每次只取一个数据，导致数据堆积问题;
                         // 将if（取数据不为空）改为while(取数据不为空)
                         while ((protocol = decoder.popData()) != null) {
-                            if (null != callback)
+                            if (null != callback) {
                                 callback.dataReciveEvent(protocol);
-                            else
+                            } else {
                                 dataReciveEvent(protocol);
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -118,29 +121,27 @@ public abstract class NetEventListener<Protocol extends IProtocol> implements Ev
 
     @Override
     public boolean sendData(byte[] datas) throws Exception {
-        if (checkChannel())
-            return channel.sendData(datas);
-        return false;
+        return sendData(datas, false);
     }
 
     @Override
     public boolean sendData(byte[] netdatas, boolean isWait) throws Exception {
-        if (checkChannel())
+        if (checkChannel()) {
             return channel.sendData(netdatas, isWait);
+        }
         return false;
     }
 
     @Override
-    public boolean sendData(IBytesBuild data) throws Exception {
-        if (checkChannel())
-            return channel.sendData(data);
-        return false;
+    public boolean sendData(IBytesBuild netdata) throws Exception {
+        return sendData(netdata, false);
     }
 
     @Override
     public boolean sendData(IBytesBuild netdata, boolean isWait) throws Exception {
-        if (checkChannel())
+        if (checkChannel()) {
             return channel.sendData(netdata, isWait);
+        }
         return false;
     }
 
