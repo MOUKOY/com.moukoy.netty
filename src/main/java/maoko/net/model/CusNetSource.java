@@ -18,11 +18,11 @@ import maoko.net.util.SendDataUtil;
  */
 public class CusNetSource implements INetChanel {
 	private Channel chanel;
-	private Map<String, Object> extraSettings;// 額外配置信息，初始容量3
+	private Map<String, Object> extraSettings;// 初始容量3
 
 	public CusNetSource(Channel chanel) {
 		this.chanel = chanel;
-		this.extraSettings = new HashMap<String, Object>(3);
+		//this.extraSettings = new HashMap<String, Object>(3);
 	}
 
 	@Override
